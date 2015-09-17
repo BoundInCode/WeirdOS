@@ -37,6 +37,18 @@ module TSOS {
                                   "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
 
+            // date
+            sc = new ShellCommand(this.shellDate,
+                                  "date",
+                                  "- Displays the current date.");
+            this.commandList[this.commandList.length] = sc;
+
+            // whereami
+            sc = new ShellCommand(this.shellWhereami,
+                "whereami",
+                "- Tells the user where in the world they are.");
+            this.commandList[this.commandList.length] = sc;
+
             // help
             sc = new ShellCommand(this.shellHelp,
                                   "help",
@@ -216,6 +228,14 @@ module TSOS {
                 _StdOut.advanceLine();
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
+        }
+
+        public shellDate(args) {
+            _StdOut.putText(new Date().toLocaleDateString());
+        }
+
+        public shellWhereami(args){
+            _StdOut.putText("Right where you need to be.");
         }
 
         public shellShutdown(args) {

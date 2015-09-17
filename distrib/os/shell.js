@@ -28,6 +28,12 @@ var TSOS;
             // ver
             sc = new TSOS.ShellCommand(this.shellVer, "ver", "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
+            // date
+            sc = new TSOS.ShellCommand(this.shellDate, "date", "- Displays the current date.");
+            this.commandList[this.commandList.length] = sc;
+            // whereami
+            sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", "- Tells the user where in the world they are.");
+            this.commandList[this.commandList.length] = sc;
             // help
             sc = new TSOS.ShellCommand(this.shellHelp, "help", "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
@@ -177,6 +183,12 @@ var TSOS;
                 _StdOut.advanceLine();
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
+        };
+        Shell.prototype.shellDate = function (args) {
+            _StdOut.putText(new Date().toLocaleDateString());
+        };
+        Shell.prototype.shellWhereami = function (args) {
+            _StdOut.putText("Right where you need to be.");
         };
         Shell.prototype.shellShutdown = function (args) {
             _StdOut.putText("Shutting down...");
