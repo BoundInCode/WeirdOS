@@ -7,38 +7,38 @@
    Look at the push and shift methods, as they are the least obvious here.
 
    ------------ */
-
-module WeirdOS {
-    export class Queue {
-        constructor(public q = new Array()) {
+var WeirdOS;
+(function (WeirdOS) {
+    var Queue = (function () {
+        function Queue(q) {
+            if (q === void 0) { q = new Array(); }
+            this.q = q;
         }
-
-        public getSize() {
+        Queue.prototype.getSize = function () {
             return this.q.length;
-        }
-
-        public isEmpty(){
+        };
+        Queue.prototype.isEmpty = function () {
             return (this.q.length == 0);
-        }
-
-        public enqueue(element) {
+        };
+        Queue.prototype.enqueue = function (element) {
             this.q.push(element);
-        }
-
-        public dequeue() {
+        };
+        Queue.prototype.dequeue = function () {
             var retVal = null;
             if (this.q.length > 0) {
                 retVal = this.q.shift();
             }
             return retVal;
-        }
-
-        public toString() {
+        };
+        Queue.prototype.toString = function () {
             var retVal = "";
             for (var i in this.q) {
                 retVal += "[" + this.q[i] + "] ";
             }
             return retVal;
-        }
-    }
-}
+        };
+        return Queue;
+    })();
+    WeirdOS.Queue = Queue;
+})(WeirdOS || (WeirdOS = {}));
+//# sourceMappingURL=queue.js.map

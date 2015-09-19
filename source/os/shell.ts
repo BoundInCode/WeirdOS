@@ -15,7 +15,7 @@
 
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
 
-module TSOS {
+module WeirdOS {
     export class Shell {
         // Properties
         public promptStr = ">";
@@ -30,6 +30,12 @@ module TSOS {
             var sc;
             //
             // Load the command list.
+
+            // load
+            sc = new ShellCommand(this.shellLoad,
+                "load",
+                "- Loads the user program into the OS memory.");
+            this.commandList[this.commandList.length] = sc;
 
             // ver
             sc = new ShellCommand(this.shellVer,
@@ -216,6 +222,15 @@ module TSOS {
            } else {
               _StdOut.putText("For what?");
            }
+        }
+
+        public shellLoad() {
+            var programInput = document.getElementById("taProgramInput").value;
+            if(/^[a-fA-F0-9]*$/.test(programInput)) {
+                _StdOut.putText("Program successfully loaded.");
+            } else {
+                _StdOut.putText("Error. Text input must consist only of hex or spaces.");
+            }
         }
 
         public shellVer(args) {

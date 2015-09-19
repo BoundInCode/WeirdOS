@@ -2,7 +2,7 @@
    Interrupt.ts
    ------------ */
 
-module TSOS {
+module WeirdOS {
     export class Interrupt {
         constructor(public irq, public params) {
         }

@@ -9,7 +9,34 @@
      Note: This is not the Shell. The Shell is the "command line interface" (CLI) or interpreter for this console.
      ------------ */
 
-module TSOS {
+module WeirdOS {
+
+    export class CommandHistory {
+        constructor(public commandStack = [],
+                    public index = 0) {
+
+        }
+        public init(): void {
+            this.commandStack = [];
+            index = 0;
+        }
+
+        public push(command) {
+            this.commandStack.unshift(command);
+            index = 0;
+        }
+
+        public upHistory(): String {
+            var prevCommand = this.commandStack[index % this.commandStack.length];
+            index++;
+            return prevCommand;
+        }
+
+        public downHistory(): String {
+            index = Math.max(index - 1, 0);
+            return this.commandStack[index];
+        }
+    }
 
     export class Console {
 
@@ -17,7 +44,8 @@ module TSOS {
                     public currentFontSize = _DefaultFontSize,
                     public currentXPosition = 0,
                     public currentYPosition = _DefaultFontSize,
-                    public buffer = "") {
+                    public buffer = "",
+                    public commandHistory:CommandHistory = new CommandHistory()) {
         }
 
         public init(): void {
@@ -27,6 +55,7 @@ module TSOS {
 
         private clearScreen(): void {
             _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
+            _Canvas.height = _DefaultCanvasHeight;
         }
 
         private resetXY(): void {
@@ -44,7 +73,28 @@ module TSOS {
                     // ... tell the shell ...
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
+                    this.commandHistory.push(this.buffer);
                     this.buffer = "";
+                } else if (chr === String.fromCharCode(9)) {  // Tab
+                    console.log("tab");
+                    for (var i = 0; i < _OsShell.commandList.length; i++) {
+                        var command = _OsShell.commandList[i].command;
+                        if (command.startsWith(this.buffer)) {
+                            this.putText(command.substr(this.buffer.length));
+                            this.buffer = command;
+                            break;
+                        }
+                    }
+                } else if (chr === String.fromCharCode(38)) { // Up Arrow
+                    this.clearText(this.buffer);
+                    this.buffer = this.commandHistory.upHistory();
+                    if (this.buffer.length > 0) {
+                        this.putText(this.buffer);
+                    }
+                } else if (chr === String.fromCharCode(8)) { // Backspace
+                    var bufferLen = this.buffer.length;
+                    this.clearText(this.buffer.substr(bufferLen - 1));
+                    this.buffer = this.buffer.substr(0, bufferLen - 1);
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
@@ -54,6 +104,15 @@ module TSOS {
                 }
                 // TODO: Write a case for Ctrl-C.
             }
+            console.log(this.buffer);
+        }
+
+        // Remove text at the end of the buffer
+        public clearText(text): void {
+            var charWidth = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+            var charHeight = _DefaultFontSize + _DrawingContext.fontDescent(this.currentFont, this.currentFontSize);
+            _DrawingContext.clearRect(this.currentXPosition - charWidth, this.currentYPosition - charHeight, charWidth, charHeight + _FontHeightMargin);
+            this.currentXPosition -= charWidth;
         }
 
         public putText(text): void {
@@ -71,6 +130,9 @@ module TSOS {
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
                 this.currentXPosition = this.currentXPosition + offset;
+                if (_Canvas.height > _DefaultCanvasHeight) {
+                    divConsole.scrollTop = divConsole.scrollHeight;
+                }
             }
          }
 
@@ -85,7 +147,13 @@ module TSOS {
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
 
-            // TODO: Handle scrolling. (iProject 1)
+            if (this.currentYPosition > _Canvas.height) {
+                var imgData = _Canvas.getContext('2d').getImageData(0,0,_Canvas.width, _Canvas.height);
+                var divConsole = document.getElementById("divConsole");
+                _Canvas.height = this.currentYPosition + _FontHeightMargin*2;
+                divConsole.scrollTop = divConsole.scrollHeight;
+                _Canvas.getContext('2d').putImageData(imgData,0,0);
+            }
         }
     }
  }

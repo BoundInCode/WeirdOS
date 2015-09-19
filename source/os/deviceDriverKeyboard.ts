@@ -9,7 +9,7 @@
    The Kernel Keyboard Device Driver.
    ---------------------------------- */
 
-module TSOS {
+module WeirdOS {
 
     // Extends DeviceDriver
     export class DeviceDriverKeyboard extends DeviceDriver {
@@ -17,6 +17,48 @@ module TSOS {
         constructor() {
             // Override the base method pointers.
             super(this.krnKbdDriverEntry, this.krnKbdDispatchKeyPress);
+        }
+
+        private keyboardSymbols = {
+
+            110: ".",
+            111: "\\",
+            186: ";",
+            187: "=",
+            188: ",",
+            189: "-",
+            190: ".",
+            191: "/",
+            192: "`",
+            219: "[",
+            220: "\\",
+            221: "]",
+            222: "'"
+        }
+        private shiftKeyboardSymbols = {
+            48: ")",
+            49: "!",
+            50: "@",
+            51: "#",
+            52: "$",
+            53: "%",
+            54: "^",
+            55: "&",
+            56: "*",
+            57: "(",
+            110: "<",
+            111: "?",
+            186: ":",
+            187: "+",
+            188: "<",
+            189: "_",
+            190: ">",
+            191: "?",
+            192: "~",
+            219: "{",
+            220: "|",
+            221: "}",
+            222: "\"",
         }
 
         public krnKbdDriverEntry() {
@@ -43,11 +85,28 @@ module TSOS {
                 }
                 // TODO: Check for caps-lock and handle as shifted if so.
                 _KernelInputQueue.enqueue(chr);
-            } else if (((keyCode >= 48) && (keyCode <= 57)) ||   // digits
-                        (keyCode == 32)                     ||   // space
-                        (keyCode == 13)) {                       // enter
+            } else if ((keyCode == 32)                     ||   // space
+                       (keyCode == 13)                     ||   // enter
+                       (keyCode == 8)                      ||   // backspace
+                       (keyCode == 9)) {                        // tab
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
+            } else if (keyCode >= 37 && keyCode <= 40) { // Arrow keys
+                console.log(keyCode);
+                chr = String.fromCharCode(keyCode);
+                _KernelInputQueue.enqueue(chr);
+            } else { // Digits & Symbols
+                if (isShifted) {
+                    chr = this.shiftKeyboardSymbols[keyCode];
+                } else if (keyCode >= 48 && keyCode <= 57){
+                    chr = String.fromCharCode(keyCode);
+                } else {
+                    chr = this.keyboardSymbols[keyCode];
+                }
+                console.log(keyCode);
+                if (chr !== undefined) {
+                    _KernelInputQueue.enqueue(chr);
+                }
             }
         }
     }
