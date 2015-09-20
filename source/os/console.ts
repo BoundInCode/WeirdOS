@@ -76,7 +76,6 @@ module WeirdOS {
                     this.commandHistory.push(this.buffer);
                     this.buffer = "";
                 } else if (chr === String.fromCharCode(9)) {  // Tab
-                    console.log("tab");
                     for (var i = 0; i < _OsShell.commandList.length; i++) {
                         var command = _OsShell.commandList[i].command;
                         if (command.startsWith(this.buffer)) {
@@ -104,7 +103,6 @@ module WeirdOS {
                 }
                 // TODO: Write a case for Ctrl-C.
             }
-            console.log(this.buffer);
         }
 
         // Remove text at the end of the buffer
@@ -125,11 +123,16 @@ module WeirdOS {
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
             if (text !== "") {
-                // Draw the text at the current X and Y coordinates.
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-                // Move the current X position.
-                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                this.currentXPosition = this.currentXPosition + offset;
+                for (var i = 0; i < text.length; i++) {
+                    if (this.currentXPosition > _DefaultCanvasWidth) {
+                        this.advanceLine();
+                    }
+                    // Draw the text at the current X and Y coordinates.
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, textSegment);
+                    // Move the current X position.
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, textSegment);
+                    this.currentXPosition = this.currentXPosition + offset;
+                }
                 if (_Canvas.height > _DefaultCanvasHeight) {
                     divConsole.scrollTop = divConsole.scrollHeight;
                 }

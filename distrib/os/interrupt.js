@@ -1,8 +1,8 @@
 /* ------------
    Interrupt.ts
    ------------ */
-var TSOS;
-(function (TSOS) {
+var WeirdOS;
+(function (WeirdOS) {
     var Interrupt = (function () {
         function Interrupt(irq, params) {
             this.irq = irq;
@@ -10,5 +10,5 @@ var TSOS;
         }
         return Interrupt;
     })();
-    TSOS.Interrupt = Interrupt;
-})(TSOS || (TSOS = {}));
+    WeirdOS.Interrupt = Interrupt;
+})(WeirdOS || (WeirdOS = {}));

@@ -1,5 +1,5 @@
-var TSOS;
-(function (TSOS) {
+var WeirdOS;
+(function (WeirdOS) {
     var ShellCommand = (function () {
         function ShellCommand(func, command, description) {
             if (command === void 0) { command = ""; }
@@ -10,5 +10,5 @@ var TSOS;
         }
         return ShellCommand;
     })();
-    TSOS.ShellCommand = ShellCommand;
-})(TSOS || (TSOS = {}));
+    WeirdOS.ShellCommand = ShellCommand;
+})(WeirdOS || (WeirdOS = {}));

@@ -172,8 +172,14 @@ module WeirdOS {
         }
 
         public krnTrapError(msg) {
+            console.log("testing...");
             Control.hostLog("OS ERROR - TRAP: " + msg);
-            // TODO: Display error on console, perhaps in some sort of colored screen. (Maybe blue?)
+            var bsodImg = new Image();
+            bsodImg.onload = function () {
+                _Canvas.getContext('2d').drawImage(bsodImg, 0, 0, 500, 500);
+            }
+            bsodImg.src = "distrib/images/bsod.png";
+
             this.krnShutdown();
         }
     }

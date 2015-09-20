@@ -43,6 +43,12 @@ module WeirdOS {
                                   "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
 
+            // Tests BSOD
+            sc = new ShellCommand(this.shellBSOD,
+                "bsod",
+                "- Shows the Blue Screen of Death for the OS. (For testing only.)");
+            this.commandList[this.commandList.length] = sc;
+
             // date
             sc = new ShellCommand(this.shellDate,
                                   "date",
@@ -231,6 +237,11 @@ module WeirdOS {
             } else {
                 _StdOut.putText("Error. Text input must consist only of hex or spaces.");
             }
+        }
+
+        public shellBSOD(args) {
+            // Display BSOD
+            _Kernel.krnTrapError("testing...");
         }
 
         public shellVer(args) {

@@ -8,6 +8,10 @@ body {
   font-style: normal;
 }
 
+#divConsole {
+  overflow: scroll;
+}
+
 h1 {
   color: black;
   font-size: 24pt;
@@ -31,9 +35,11 @@ h3 {
 }
 
 #display {
-  background-color:#DFDBC3;
-  border: 2px solid red;
-  cursor: default;
+    background-color:#DFDBC3;
+    border: 2px solid red;
+    cursor: default;
+    width: 500px;
+    height: 500px;
 }
 
 .normal_button {

@@ -12,14 +12,54 @@ var __extends = (this && this.__extends) || function (d, b) {
 
    The Kernel Keyboard Device Driver.
    ---------------------------------- */
-var TSOS;
-(function (TSOS) {
+var WeirdOS;
+(function (WeirdOS) {
     // Extends DeviceDriver
     var DeviceDriverKeyboard = (function (_super) {
         __extends(DeviceDriverKeyboard, _super);
         function DeviceDriverKeyboard() {
             // Override the base method pointers.
             _super.call(this, this.krnKbdDriverEntry, this.krnKbdDispatchKeyPress);
+            this.keyboardSymbols = {
+                110: ".",
+                111: "\\",
+                186: ";",
+                187: "=",
+                188: ",",
+                189: "-",
+                190: ".",
+                191: "/",
+                192: "`",
+                219: "[",
+                220: "\\",
+                221: "]",
+                222: "'"
+            };
+            this.shiftKeyboardSymbols = {
+                48: ")",
+                49: "!",
+                50: "@",
+                51: "#",
+                52: "$",
+                53: "%",
+                54: "^",
+                55: "&",
+                56: "*",
+                57: "(",
+                110: "<",
+                111: "?",
+                186: ":",
+                187: "+",
+                188: "<",
+                189: "_",
+                190: ">",
+                191: "?",
+                192: "~",
+                219: "{",
+                220: "|",
+                221: "}",
+                222: "\""
+            };
         }
         DeviceDriverKeyboard.prototype.krnKbdDriverEntry = function () {
             // Initialization routine for this, the kernel-mode Keyboard Device Driver.
@@ -45,14 +85,35 @@ var TSOS;
                 // TODO: Check for caps-lock and handle as shifted if so.
                 _KernelInputQueue.enqueue(chr);
             }
-            else if (((keyCode >= 48) && (keyCode <= 57)) ||
-                (keyCode == 32) ||
-                (keyCode == 13)) {
+            else if ((keyCode == 32) ||
+                (keyCode == 13) ||
+                (keyCode == 8) ||
+                (keyCode == 9)) {
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             }
+            else if (keyCode >= 37 && keyCode <= 40) {
+                console.log(keyCode);
+                chr = String.fromCharCode(keyCode);
+                _KernelInputQueue.enqueue(chr);
+            }
+            else {
+                if (isShifted) {
+                    chr = this.shiftKeyboardSymbols[keyCode];
+                }
+                else if (keyCode >= 48 && keyCode <= 57) {
+                    chr = String.fromCharCode(keyCode);
+                }
+                else {
+                    chr = this.keyboardSymbols[keyCode];
+                }
+                console.log(keyCode);
+                if (chr !== undefined) {
+                    _KernelInputQueue.enqueue(chr);
+                }
+            }
         };
         return DeviceDriverKeyboard;
-    })(TSOS.DeviceDriver);
-    TSOS.DeviceDriverKeyboard = DeviceDriverKeyboard;
-})(TSOS || (TSOS = {}));
+    })(WeirdOS.DeviceDriver);
+    WeirdOS.DeviceDriverKeyboard = DeviceDriverKeyboard;
+})(WeirdOS || (WeirdOS = {}));

@@ -1,5 +1,5 @@
-var TSOS;
-(function (TSOS) {
+var WeirdOS;
+(function (WeirdOS) {
     var UserCommand = (function () {
         function UserCommand(command, args) {
             if (command === void 0) { command = ""; }
@@ -9,5 +9,5 @@ var TSOS;
         }
         return UserCommand;
     })();
-    TSOS.UserCommand = UserCommand;
-})(TSOS || (TSOS = {}));
+    WeirdOS.UserCommand = UserCommand;
+})(WeirdOS || (WeirdOS = {}));
