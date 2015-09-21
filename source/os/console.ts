@@ -18,23 +18,23 @@ module WeirdOS {
         }
         public init(): void {
             this.commandStack = [];
-            index = 0;
+            this.index = 0;
         }
 
         public push(command) {
             this.commandStack.unshift(command);
-            index = 0;
+            this.index = 0;
         }
 
-        public upHistory(): String {
-            var prevCommand = this.commandStack[index % this.commandStack.length];
-            index++;
+        public upHistory(): string {
+            var prevCommand = this.commandStack[this.index % this.commandStack.length];
+            this.index++;
             return prevCommand;
         }
 
-        public downHistory(): String {
-            index = Math.max(index - 1, 0);
-            return this.commandStack[index];
+        public downHistory(): string {
+            this.index = Math.max(this.index - 1, 0);
+            return this.commandStack[this.index];
         }
     }
 
@@ -123,17 +123,30 @@ module WeirdOS {
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
             if (text !== "") {
+                var textSegment = "";
                 for (var i = 0; i < text.length; i++) {
-                    if (this.currentXPosition > _DefaultCanvasWidth) {
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, textSegment);
+                    if (this.currentXPosition + offset > _DefaultCanvasWidth) {
                         this.advanceLine();
                     }
-                    // Draw the text at the current X and Y coordinates.
-                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, textSegment);
-                    // Move the current X position.
-                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, textSegment);
-                    this.currentXPosition = this.currentXPosition + offset;
+                    if (text[i] === " ") {
+                        // Draw the text at the current X and Y coordinates.
+                        _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, textSegment);
+                        // Move the current X position.
+                        this.currentXPosition = this.currentXPosition + offset;
+                        textSegment = " ";
+                    } else {
+                        textSegment += text[i];
+                    }
                 }
+                // Draw the text at the current X and Y coordinates.
+                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, textSegment);
+                // Move the current X position.
+                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, textSegment);
+                this.currentXPosition = this.currentXPosition + offset;
+
                 if (_Canvas.height > _DefaultCanvasHeight) {
+                    var divConsole = document.getElementById("divConsole");
                     divConsole.scrollTop = divConsole.scrollHeight;
                 }
             }
@@ -151,11 +164,11 @@ module WeirdOS {
                                      _FontHeightMargin;
 
             if (this.currentYPosition > _Canvas.height) {
-                var imgData = _Canvas.getContext('2d').getImageData(0,0,_Canvas.width, _Canvas.height);
+                var imgData = _Canvas.getContext('2d').getImageData(0,0, _Canvas.width, _Canvas.height);
                 var divConsole = document.getElementById("divConsole");
                 _Canvas.height = this.currentYPosition + _FontHeightMargin*2;
-                divConsole.scrollTop = divConsole.scrollHeight;
                 _Canvas.getContext('2d').putImageData(imgData,0,0);
+                divConsole.scrollTop = divConsole.scrollHeight;
             }
         }
     }

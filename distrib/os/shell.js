@@ -26,6 +26,9 @@ var WeirdOS;
             //
             // Load the command list.
             // load
+            sc = new WeirdOS.ShellCommand(this.shell007, "007", "- A special surprise.");
+            this.commandList[this.commandList.length] = sc;
+            // load
             sc = new WeirdOS.ShellCommand(this.shellLoad, "load", "- Loads the user program into the OS memory.");
             this.commandList[this.commandList.length] = sc;
             // ver
@@ -179,6 +182,10 @@ var WeirdOS;
             else {
                 _StdOut.putText("For what?");
             }
+        };
+        Shell.prototype.shell007 = function () {
+            var snd = new Audio("https://www.youtube.com/watch?v=cxZbp6g5aX0"); // buffers automatically when created
+            snd.play();
         };
         Shell.prototype.shellLoad = function () {
             var programInput = document.getElementById("taProgramInput").value;

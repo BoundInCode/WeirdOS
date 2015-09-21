@@ -4,6 +4,10 @@
    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
    <meta name="author"             content="Alan G. Labouseur" />
    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="distrib/css/bootstrap.min.css" type="text/css" media="screen" />
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="../bower_components/morrisjs/morris.css" rel="stylesheet">
+    <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
    <title>
       WeirdOS - a browser-based virtual Operating System in TypeScript
    </title>
@@ -42,7 +46,7 @@
       <input type="button"
              id = "btnStartOS"
              name="brnStartOS"
-             class="normal_button"
+             class="btn btn-success"
              value="Start"
              tabindex="0"
              onclick="WeirdOS.Control.hostBtnStartOS_click(this);">
@@ -50,7 +54,7 @@
       <input type="button"
              id = "btnHaltOS"
              name="brnHaltOS"
-             class="normal_button"
+             class="btn btn-default"
              disabled="disabled"
              value="Halt"
              tabindex="1"
@@ -59,7 +63,7 @@
       <input type="button"
              id = "btnReset"
              name="brnReset"
-             class="normal_button"
+             class="btn btn-danger"
              disabled="disabled"
              value="Reset"
              tabindex="2"

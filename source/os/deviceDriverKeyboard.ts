@@ -92,7 +92,6 @@ module WeirdOS {
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             } else if (keyCode >= 37 && keyCode <= 40) { // Arrow keys
-                console.log(keyCode);
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             } else { // Digits & Symbols
@@ -103,7 +102,6 @@ module WeirdOS {
                 } else {
                     chr = this.keyboardSymbols[keyCode];
                 }
-                console.log(keyCode);
                 if (chr !== undefined) {
                     _KernelInputQueue.enqueue(chr);
                 }

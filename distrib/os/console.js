@@ -18,20 +18,20 @@ var WeirdOS;
         }
         CommandHistory.prototype.init = function () {
             this.commandStack = [];
-            index = 0;
+            this.index = 0;
         };
         CommandHistory.prototype.push = function (command) {
             this.commandStack.unshift(command);
-            index = 0;
+            this.index = 0;
         };
         CommandHistory.prototype.upHistory = function () {
-            var prevCommand = this.commandStack[index % this.commandStack.length];
-            index++;
+            var prevCommand = this.commandStack[this.index % this.commandStack.length];
+            this.index++;
             return prevCommand;
         };
         CommandHistory.prototype.downHistory = function () {
-            index = Math.max(index - 1, 0);
-            return this.commandStack[index];
+            this.index = Math.max(this.index - 1, 0);
+            return this.commandStack[this.index];
         };
         return CommandHistory;
     })();
@@ -124,17 +124,30 @@ var WeirdOS;
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
             if (text !== "") {
+                var textSegment = "";
                 for (var i = 0; i < text.length; i++) {
-                    if (this.currentXPosition > _DefaultCanvasWidth) {
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, textSegment);
+                    if (this.currentXPosition + offset > _DefaultCanvasWidth) {
                         this.advanceLine();
                     }
-                    // Draw the text at the current X and Y coordinates.
-                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, textSegment);
-                    // Move the current X position.
-                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, textSegment);
-                    this.currentXPosition = this.currentXPosition + offset;
+                    if (text[i] === " ") {
+                        // Draw the text at the current X and Y coordinates.
+                        _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, textSegment);
+                        // Move the current X position.
+                        this.currentXPosition = this.currentXPosition + offset;
+                        textSegment = " ";
+                    }
+                    else {
+                        textSegment += text[i];
+                    }
                 }
+                // Draw the text at the current X and Y coordinates.
+                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, textSegment);
+                // Move the current X position.
+                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, textSegment);
+                this.currentXPosition = this.currentXPosition + offset;
                 if (_Canvas.height > _DefaultCanvasHeight) {
+                    var divConsole = document.getElementById("divConsole");
                     divConsole.scrollTop = divConsole.scrollHeight;
                 }
             }
@@ -153,8 +166,8 @@ var WeirdOS;
                 var imgData = _Canvas.getContext('2d').getImageData(0, 0, _Canvas.width, _Canvas.height);
                 var divConsole = document.getElementById("divConsole");
                 _Canvas.height = this.currentYPosition + _FontHeightMargin * 2;
-                divConsole.scrollTop = divConsole.scrollHeight;
                 _Canvas.getContext('2d').putImageData(imgData, 0, 0);
+                divConsole.scrollTop = divConsole.scrollHeight;
             }
         };
         return Console;

@@ -32,6 +32,12 @@ module WeirdOS {
             // Load the command list.
 
             // load
+            sc = new ShellCommand(this.shell007,
+                "007",
+                "- A special surprise.");
+            this.commandList[this.commandList.length] = sc;
+
+            // load
             sc = new ShellCommand(this.shellLoad,
                 "load",
                 "- Loads the user program into the OS memory.");
@@ -228,6 +234,11 @@ module WeirdOS {
            } else {
               _StdOut.putText("For what?");
            }
+        }
+
+        public shell007(){
+            var snd = new Audio("https://www.youtube.com/watch?v=cxZbp6g5aX0"); // buffers automatically when created
+            snd.play();
         }
 
         public shellLoad() {
