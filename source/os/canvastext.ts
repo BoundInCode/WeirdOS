@@ -145,7 +145,7 @@ module WeirdOS {
             return total;
         }
 
-        public static draw(ctx, font, size, x, y, str) {
+        public static draw(ctx, font, size, x, y, str, color="white") {
             var total = 0;
             var len = str.length;
             var mag = size / 25.0;
@@ -153,7 +153,7 @@ module WeirdOS {
             ctx.save();
             ctx.lineCap = "round";
             ctx.lineWidth = 2.0 * mag;
-            ctx.strokeStyle = "black";
+            ctx.strokeStyle = color;
 
             for (var i = 0; i < len; i++) {
                 var c = CanvasTextFunctions.letter(str.charAt(i));

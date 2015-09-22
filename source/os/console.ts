@@ -95,21 +95,39 @@ module WeirdOS {
                     this.clearText(this.buffer.substr(bufferLen - 1));
                     this.buffer = this.buffer.substr(0, bufferLen - 1);
                 } else {
-                    // This is a "normal" character, so ...
-                    // ... draw it on the screen...
-                    this.putText(chr);
-                    // ... and add it to our buffer.
-                    this.buffer += chr;
+                    if (_Gamify) {
+                        _EnergyLevel = Math.max(0, _EnergyLevel - 5);
+                        document.getElementById("energyBar").style.width = _EnergyLevel + "%";
+                        if (_EnergyLevel <= 0) {
+                            _Kernel.krnShutdown();
+                        }
+                        var lag = (100 - _EnergyLevel) * 5;
+                        console.log(lag);
+                        this.sleep(lag);
+                        this.putText(chr);
+                        this.buffer += chr;
+                    } else {
+                        // This is a "normal" character, so ...
+                        // ... draw it on the screen...
+                        this.putText(chr);
+                        // ... and add it to our buffer.
+                        this.buffer += chr;
+                    }
                 }
                 // TODO: Write a case for Ctrl-C.
             }
+        }
+
+        public sleep(milliseconds){
+            var e = new Date().getTime() + (milliseconds);
+            while (new Date().getTime() <= e) {}
         }
 
         // Remove text at the end of the buffer
         public clearText(text): void {
             var charWidth = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
             var charHeight = _DefaultFontSize + _DrawingContext.fontDescent(this.currentFont, this.currentFontSize);
-            _DrawingContext.clearRect(this.currentXPosition - charWidth, this.currentYPosition - charHeight, charWidth, charHeight + _FontHeightMargin);
+            _DrawingContext.clearRect(this.currentXPosition - charWidth, this.currentYPosition - charHeight, charWidth, charHeight + _DefaultFontSize);
             this.currentXPosition -= charWidth;
         }
 

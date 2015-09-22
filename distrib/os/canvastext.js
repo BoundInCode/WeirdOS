@@ -41,14 +41,15 @@ var WeirdOS;
             }
             return total;
         };
-        CanvasTextFunctions.draw = function (ctx, font, size, x, y, str) {
+        CanvasTextFunctions.draw = function (ctx, font, size, x, y, str, color) {
+            if (color === void 0) { color = "white"; }
             var total = 0;
             var len = str.length;
             var mag = size / 25.0;
             ctx.save();
             ctx.lineCap = "round";
             ctx.lineWidth = 2.0 * mag;
-            ctx.strokeStyle = "black";
+            ctx.strokeStyle = color;
             for (var i = 0; i < len; i++) {
                 var c = CanvasTextFunctions.letter(str.charAt(i));
                 if (!c) {

@@ -18,7 +18,7 @@
 module WeirdOS {
     export class Shell {
         // Properties
-        public promptStr = ">";
+        public promptStr = "> ";
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
         public apologies = "[sorry]";
@@ -31,10 +31,16 @@ module WeirdOS {
             //
             // Load the command list.
 
-            // load
-            sc = new ShellCommand(this.shell007,
-                "007",
-                "- A special surprise.");
+            // gamify
+            sc = new ShellCommand(this.shellGamify,
+                "gamify",
+                "- Toggles instant gamification. (Warning: Very Obnoxious)");
+            this.commandList[this.commandList.length] = sc;
+
+            // status
+            sc = new ShellCommand(this.shellStatus,
+                 "status",
+                 "- Set the status in the Host.");
             this.commandList[this.commandList.length] = sc;
 
             // load
@@ -115,6 +121,7 @@ module WeirdOS {
             //
             // Display the initial prompt.
             this.putPrompt();
+            document.getElementById("dateBadge").innerHTML = new Date().toLocaleDateString();
         }
 
         public putPrompt() {
@@ -236,9 +243,15 @@ module WeirdOS {
            }
         }
 
-        public shell007(){
-            var snd = new Audio("https://www.youtube.com/watch?v=cxZbp6g5aX0"); // buffers automatically when created
-            snd.play();
+        public shellStatus(args){
+            document.getElementById("status").innerHTML = args.join(" ");
+        }
+
+        public shellGamify(){
+            _Gamify = !_Gamify;
+            _EnergyLevel = 100;
+            document.getElementById("energyBar").style.width = 100 + "%";
+            document.getElementById("energyDiv").hidden = !_Gamify;
         }
 
         public shellLoad() {

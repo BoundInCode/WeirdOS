@@ -1,114 +1,136 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-   <meta name="author"             content="Alan G. Labouseur" />
-   <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="author"             content="Alan G. Labouseur" />
+    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="distrib/css/bootstrap.min.css" type="text/css" media="screen" />
-    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
-    <link href="../bower_components/morrisjs/morris.css" rel="stylesheet">
-    <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-   <title>
-      WeirdOS - a browser-based virtual Operating System in TypeScript
-   </title>
+    <link href="distrib/css/sb-admin-2.css" rel="stylesheet">
+    <link href="distrib/css/morris.css" rel="stylesheet">
+    <link href="distrib/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <title>
+        WeirdOS - a browser-based virtual Operating System in TypeScript
+    </title>
 
-   <!-- Globals CONSTANTS and _Variables. Must included be first. -->
-   <script type="text/javascript" src="distrib/globals.js"></script>
+    <!-- Globals CONSTANTS and _Variables. Must included be first. -->
+    <script type="text/javascript" src="distrib/globals.js"></script>
 
-   <!-- Host (Virtual Machine / Hardware Simulation) Routines -->
-   <script type="text/javascript" src="distrib/host/control.js"></script>
-   <script type="text/javascript" src="distrib/host/devices.js"></script>
-   <script type="text/javascript" src="distrib/host/cpu.js"></script>
+    <!-- Host (Virtual Machine / Hardware Simulation) Routines -->
+    <script type="text/javascript" src="distrib/host/control.js"></script>
+    <script type="text/javascript" src="distrib/host/devices.js"></script>
+    <script type="text/javascript" src="distrib/host/cpu.js"></script>
 
-   <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
-   <script type="text/javascript" src="distrib/os/interrupt.js"></script>
-   <script type="text/javascript" src="distrib/os/canvastext.js"></script>
-   <script type="text/javascript" src="distrib/os/console.js"></script>
-   <script type="text/javascript" src="distrib/os/deviceDriver.js"></script>
-   <script type="text/javascript" src="distrib/os/deviceDriverKeyboard.js"></script>
-   <script type="text/javascript" src="distrib/os/queue.js"></script>
-   <script type="text/javascript" src="distrib/os/shell.js"></script>
-   <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
-   <script type="text/javascript" src="distrib/os/userCommand.js"></script>
-   <script type="text/javascript" src="distrib/os/kernel.js"></script>
+    <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
+    <script type="text/javascript" src="distrib/os/interrupt.js"></script>
+    <script type="text/javascript" src="distrib/os/canvastext.js"></script>
+    <script type="text/javascript" src="distrib/os/console.js"></script>
+    <script type="text/javascript" src="distrib/os/deviceDriver.js"></script>
+    <script type="text/javascript" src="distrib/os/deviceDriverKeyboard.js"></script>
+    <script type="text/javascript" src="distrib/os/queue.js"></script>
+    <script type="text/javascript" src="distrib/os/shell.js"></script>
+    <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
+    <script type="text/javascript" src="distrib/os/userCommand.js"></script>
+    <script type="text/javascript" src="distrib/os/kernel.js"></script>
 
-   <!-- Other Routines -->
-   <script type="text/javascript" src="distrib/utils.js"></script>
-   <!-- Uncomment this line below to enable GLaDOS testing -->
-   <!--<script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>-->
+    <!-- Other Routines -->
+    <script type="text/javascript" src="distrib/utils.js"></script>
+    <!-- Uncomment this line below to enable GLaDOS testing -->
+    <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
 </head>
 
 <body onload="onDocumentLoad()">
 
-<div id="divMain" style="width:100%;">
+<div id="page-wrapper divMain" style="width:100%;">
 
-   <div id="divButtonBar" style="margin:4px;">
-      <input type="button"
-             id = "btnStartOS"
-             name="brnStartOS"
-             class="btn btn-success"
-             value="Start"
-             tabindex="0"
-             onclick="WeirdOS.Control.hostBtnStartOS_click(this);">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">WeirdOS</a>
+        </div>
+    </nav>
 
-      <input type="button"
-             id = "btnHaltOS"
-             name="brnHaltOS"
-             class="btn btn-default"
-             disabled="disabled"
-             value="Halt"
-             tabindex="1"
-             onclick="WeirdOS.Control.hostBtnHaltOS_click(this);">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div id="divButtonBar" style="margin:4px;">
+                <input type="button"
+                       id = "btnStartOS"
+                       name="brnStartOS"
+                       class="btn btn-success"
+                       value="Start"
+                       tabindex="0"
+                       onclick="WeirdOS.Control.hostBtnStartOS_click(this);">
 
-      <input type="button"
-             id = "btnReset"
-             name="brnReset"
-             class="btn btn-danger"
-             disabled="disabled"
-             value="Reset"
-             tabindex="2"
-             onclick="WeirdOS.Control.hostBtnReset_click(this);">
-   </div>
+                <input type="button"
+                       id = "btnHaltOS"
+                       name="brnHaltOS"
+                       class="btn btn-default"
+                       disabled="disabled"
+                       value="Halt"
+                       tabindex="1"
+                       onclick="WeirdOS.Control.hostBtnHaltOS_click(this);">
 
-   <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
-      <canvas id="display"
-              width="1000px"
-              height="1000px"
-              tabindex="3">
-      </canvas>
-   </div>
+                <input type="button"
+                       id = "btnReset"
+                       name="brnReset"
+                       class="btn btn-danger"
+                       disabled="disabled"
+                       value="Reset"
+                       tabindex="2"
+                       onclick="WeirdOS.Control.hostBtnReset_click(this);">
+                <span class="label label-default" id="status">Active</span>
+                <span class="label label-default" id="dateBadge">today</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div class="progress" id="energyDiv" hidden>
+                <div class="progress-bar progress-bar-striped active" id="energyBar" style="width: 100%">Energy</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Console
+                </div>
+                <div class="panel-body" id="divConsole">
+                    <canvas id="display"
+                            width="1000px"
+                            height="1000px"
+                            tabindex="3">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Host Log</div>
+                <div class="panel-body" id="divLog">
+                    <textarea name="taHostLog" id="taHostLog"></textarea>
+                </div>
+            </div>
 
-   <div id="divLog" style="margin-left:520px;">
-      <label>
-         Host Log
-         <br>
-         <textarea name="taHostLog"
-                   id  ="taHostLog"
-                   rows="26"
-                   cols="48"
-         ></textarea>
-      </label>
-   </div>
+            <div class="panel panel-default" id="divUserProgramInput">
+                <div class="panel-heading">Program Input</div>
+                <div class="panel-body">
+                    <textarea name="taProgramInput" id="taProgramInput"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
 
-   <div id="divUserProgramInput" style="margin-left:520px;">
-      <label>
-         User Program Input
-         <br>
-         <textarea name="taProgramInput"
-                   id  ="taProgramInput"
-                   rows="8"
-                   cols="48"
-         ></textarea>
-      </label>
-   </div>
 </div>
 
 <p class="footerText" style="clear:both;">
-   <br>
-   Copyright &copy; 2008 - 2015 No Rights Reserved.
-   <br>
-   Reproduction is inhibited without the express written consent of
-   Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
+    <br>
+    Copyright &copy; 2008 - 2015 No Rights Reserved.
+    <br>
+    Reproduction is inhibited without the express written consent of
+    Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
 </p>
 
 </body>

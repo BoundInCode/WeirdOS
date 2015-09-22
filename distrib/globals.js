@@ -1,12 +1,12 @@
 /* ------------
-   Globals.ts
+ Globals.ts
 
-   Global CONSTANTS and _Variables.
-   (Global over both the OS and Hardware Simulation / Host.)
+ Global CONSTANTS and _Variables.
+ (Global over both the OS and Hardware Simulation / Host.)
 
-   This code references page numbers in the text book:
-   Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
-   ------------ */
+ This code references page numbers in the text book:
+ Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
+ ------------ */
 //
 // Global CONSTANTS (TypeScript 1.5 introduced const. Very cool.)
 //
@@ -27,6 +27,7 @@ var _Canvas; // Initialized in Control.hostInit().
 var _DrawingContext; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.
 var _DefaultFontFamily = "sans"; // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
 var _DefaultFontSize = 24;
+var _DefaultTextColor = "white";
 var _FontHeightMargin = 4; // Additional space added to font size when advancing a line.
 var _DefaultCanvasWidth = 1000;
 var _DefaultCanvasHeight = 1000;
@@ -50,6 +51,8 @@ var _hardwareClockID = null;
 // For testing (and enrichment)...
 var Glados = null; // This is the function Glados() in glados.js on Labouseur.com.
 var _GLaDOS = null; // If the above is linked in, this is the instantiated instance of Glados.
+var _Gamify = false;
+var _EnergyLevel = 100;
 var onDocumentLoad = function () {
     WeirdOS.Control.hostInit();
 };

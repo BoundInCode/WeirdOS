@@ -16,7 +16,7 @@ var WeirdOS;
     var Shell = (function () {
         function Shell() {
             // Properties
-            this.promptStr = ">";
+            this.promptStr = "> ";
             this.commandList = [];
             this.curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
             this.apologies = "[sorry]";
@@ -25,8 +25,11 @@ var WeirdOS;
             var sc;
             //
             // Load the command list.
-            // load
-            sc = new WeirdOS.ShellCommand(this.shell007, "007", "- A special surprise.");
+            // gamify
+            sc = new WeirdOS.ShellCommand(this.shellGamify, "gamify", "- Toggles instant gamification. (Warning: Very Obnoxious)");
+            this.commandList[this.commandList.length] = sc;
+            // status
+            sc = new WeirdOS.ShellCommand(this.shellStatus, "status", "- Set the status in the Host.");
             this.commandList[this.commandList.length] = sc;
             // load
             sc = new WeirdOS.ShellCommand(this.shellLoad, "load", "- Loads the user program into the OS memory.");
@@ -69,6 +72,7 @@ var WeirdOS;
             //
             // Display the initial prompt.
             this.putPrompt();
+            document.getElementById("dateBadge").innerHTML = new Date().toLocaleDateString();
         };
         Shell.prototype.putPrompt = function () {
             _StdOut.putText(this.promptStr);
@@ -183,9 +187,14 @@ var WeirdOS;
                 _StdOut.putText("For what?");
             }
         };
-        Shell.prototype.shell007 = function () {
-            var snd = new Audio("https://www.youtube.com/watch?v=cxZbp6g5aX0"); // buffers automatically when created
-            snd.play();
+        Shell.prototype.shellStatus = function (args) {
+            document.getElementById("status").innerHTML = args.join(" ");
+        };
+        Shell.prototype.shellGamify = function () {
+            _Gamify = !_Gamify;
+            _EnergyLevel = 100;
+            document.getElementById("energyBar").style.width = 100 + "%";
+            document.getElementById("energyDiv").hidden = !_Gamify;
         };
         Shell.prototype.shellLoad = function () {
             var programInput = document.getElementById("taProgramInput").value;

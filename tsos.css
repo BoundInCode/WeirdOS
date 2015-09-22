@@ -1,52 +1,60 @@
 /* TSOS.css */
 
 body {
-  font-family: Helvetica, Verdana, Arial, sans-serif;
-  font-size: 12pt;
-  font-weight: normal;
-  font-style: normal;
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    font-size: 12pt;
+    font-weight: normal;
+    font-style: normal;
 }
 
 #divConsole {
-  overflow: scroll;
+    overflow: scroll;
+}
+
+textArea {
+    width: 100%;
+    height: 100%;
 }
 
 h1 {
-  color: black;
-  font-size: 24pt;
-  font-weight: normal;
-  font-style: normal;
-  border-bottom: 1px solid black;
+    color: black;
+    font-size: 24pt;
+    font-weight: normal;
+    font-style: normal;
+    border-bottom: 1px solid black;
 }
 
 h2 {
-  color: black;
-  font-size: 20pt;
-  font-weight: normal;
-  font-style: normal;
+    color: black;
+    font-size: 20pt;
+    font-weight: normal;
+    font-style: normal;
 }
 
 h3 {
-  font-family: Helvetica, Verdana, Arial, sans-serif;
-  font-size: 16pt;
-  font-weight: normal;
-  font-style: normal;
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    font-size: 16pt;
+    font-weight: normal;
+    font-style: normal;
 }
 
 #display {
-    background-color:#DFDBC3;
-    border: 2px solid red;
+    background-color:#003c4a;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border: #003c4a solid 10px;
+    border-radius: 8px;
     cursor: default;
     width: 500px;
 }
 
 .normal_button {
-  width: 100px;
+    width: 100px;
 }
 
 .footerText {
-  color: black;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 8pt;
-  text-align: center;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    text-align: center;
 }
