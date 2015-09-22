@@ -3,8 +3,8 @@
 
    Utility functions.
    -------- */
-var WeirdOS;
-(function (WeirdOS) {
+var TSOS;
+(function (TSOS) {
     var Utils = (function () {
         function Utils() {
         }
@@ -46,5 +46,5 @@ var WeirdOS;
         };
         return Utils;
     })();
-    WeirdOS.Utils = Utils;
-})(WeirdOS || (WeirdOS = {}));
+    TSOS.Utils = Utils;
+})(TSOS || (TSOS = {}));

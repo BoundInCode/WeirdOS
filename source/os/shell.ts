@@ -256,7 +256,9 @@ module TSOS {
 
         public shellLoad() {
             var programInput = document.getElementById("taProgramInput").value;
-            if(/^[a-fA-F0-9]*$/.test(programInput)) {
+            if (programInput.length == 0) {
+                _StdOut.putText("Error. The program input field is empty.");
+            } else if(/^[a-fA-F0-9 ]*$/.test(programInput)) {
                 _StdOut.putText("Program successfully loaded.");
             } else {
                 _StdOut.putText("Error. Text input must consist only of hex or spaces.");

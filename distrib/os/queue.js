@@ -7,8 +7,8 @@
    Look at the push and shift methods, as they are the least obvious here.
 
    ------------ */
-var WeirdOS;
-(function (WeirdOS) {
+var TSOS;
+(function (TSOS) {
     var Queue = (function () {
         function Queue(q) {
             if (q === void 0) { q = new Array(); }
@@ -39,5 +39,5 @@ var WeirdOS;
         };
         return Queue;
     })();
-    WeirdOS.Queue = Queue;
-})(WeirdOS || (WeirdOS = {}));
+    TSOS.Queue = Queue;
+})(TSOS || (TSOS = {}));

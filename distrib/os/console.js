@@ -7,8 +7,8 @@
      The OS Console - stdIn and stdOut by default.
      Note: This is not the Shell. The Shell is the "command line interface" (CLI) or interpreter for this console.
      ------------ */
-var WeirdOS;
-(function (WeirdOS) {
+var TSOS;
+(function (TSOS) {
     var CommandHistory = (function () {
         function CommandHistory(commandStack, index) {
             if (commandStack === void 0) { commandStack = []; }
@@ -35,7 +35,7 @@ var WeirdOS;
         };
         return CommandHistory;
     })();
-    WeirdOS.CommandHistory = CommandHistory;
+    TSOS.CommandHistory = CommandHistory;
     var Console = (function () {
         function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, commandHistory) {
             if (currentFont === void 0) { currentFont = _DefaultFontFamily; }
@@ -190,5 +190,5 @@ var WeirdOS;
         };
         return Console;
     })();
-    WeirdOS.Console = Console;
-})(WeirdOS || (WeirdOS = {}));
+    TSOS.Console = Console;
+})(TSOS || (TSOS = {}));

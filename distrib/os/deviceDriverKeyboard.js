@@ -12,8 +12,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 
    The Kernel Keyboard Device Driver.
    ---------------------------------- */
-var WeirdOS;
-(function (WeirdOS) {
+var TSOS;
+(function (TSOS) {
     // Extends DeviceDriver
     var DeviceDriverKeyboard = (function (_super) {
         __extends(DeviceDriverKeyboard, _super);
@@ -112,6 +112,6 @@ var WeirdOS;
             }
         };
         return DeviceDriverKeyboard;
-    })(WeirdOS.DeviceDriver);
-    WeirdOS.DeviceDriverKeyboard = DeviceDriverKeyboard;
-})(WeirdOS || (WeirdOS = {}));
+    })(TSOS.DeviceDriver);
+    TSOS.DeviceDriverKeyboard = DeviceDriverKeyboard;
+})(TSOS || (TSOS = {}));

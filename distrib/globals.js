@@ -54,5 +54,5 @@ var _GLaDOS = null; // If the above is linked in, this is the instantiated insta
 var _Gamify = false;
 var _EnergyLevel = 100;
 var onDocumentLoad = function () {
-    WeirdOS.Control.hostInit();
+    TSOS.Control.hostInit();
 };

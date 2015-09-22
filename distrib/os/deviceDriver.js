@@ -3,8 +3,8 @@
 
      The "base class" for all Device Drivers.
      ------------------------------ */
-var WeirdOS;
-(function (WeirdOS) {
+var TSOS;
+(function (TSOS) {
     var DeviceDriver = (function () {
         function DeviceDriver(driverEntry, isr) {
             if (driverEntry === void 0) { driverEntry = null; }
@@ -17,5 +17,5 @@ var WeirdOS;
         }
         return DeviceDriver;
     })();
-    WeirdOS.DeviceDriver = DeviceDriver;
-})(WeirdOS || (WeirdOS = {}));
+    TSOS.DeviceDriver = DeviceDriver;
+})(TSOS || (TSOS = {}));
