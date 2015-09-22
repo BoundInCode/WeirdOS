@@ -1,5 +1,5 @@
-var WeirdOS;
-(function (WeirdOS) {
+var TSOS;
+(function (TSOS) {
     var UserCommand = (function () {
         function UserCommand(command, args) {
             if (command === void 0) { command = ""; }
@@ -9,6 +9,6 @@ var WeirdOS;
         }
         return UserCommand;
     })();
-    WeirdOS.UserCommand = UserCommand;
-})(WeirdOS || (WeirdOS = {}));
+    TSOS.UserCommand = UserCommand;
+})(TSOS || (TSOS = {}));
 //# sourceMappingURL=userCommand.js.map

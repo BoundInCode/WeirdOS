@@ -4,7 +4,7 @@
    Utility functions.
    -------- */
 
-module WeirdOS {
+module TSOS {
 
     export class Utils {
 

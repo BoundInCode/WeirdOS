@@ -1,8 +1,8 @@
 /* ------------
    Interrupt.ts
    ------------ */
-var WeirdOS;
-(function (WeirdOS) {
+var TSOS;
+(function (TSOS) {
     var Interrupt = (function () {
         function Interrupt(irq, params) {
             this.irq = irq;
@@ -10,6 +10,6 @@ var WeirdOS;
         }
         return Interrupt;
     })();
-    WeirdOS.Interrupt = Interrupt;
-})(WeirdOS || (WeirdOS = {}));
+    TSOS.Interrupt = Interrupt;
+})(TSOS || (TSOS = {}));
 //# sourceMappingURL=interrupt.js.map

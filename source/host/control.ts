@@ -23,7 +23,7 @@
 //
 // Control Services
 //
-module WeirdOS {
+module TSOS {
 
     export class Control {
 

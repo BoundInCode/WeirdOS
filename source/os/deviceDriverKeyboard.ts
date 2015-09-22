@@ -9,7 +9,7 @@
    The Kernel Keyboard Device Driver.
    ---------------------------------- */
 
-module WeirdOS {
+module TSOS {
 
     // Extends DeviceDriver
     export class DeviceDriverKeyboard extends DeviceDriver {

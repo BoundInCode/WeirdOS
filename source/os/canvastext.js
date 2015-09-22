@@ -16,8 +16,8 @@
  * Note: You could theoretically make up your own letters and symbols for your OS.
  *       That might be fun.
  * ----------------- */
-var WeirdOS;
-(function (WeirdOS) {
+var TSOS;
+(function (TSOS) {
     var CanvasTextFunctions = (function () {
         function CanvasTextFunctions() {
         }
@@ -199,6 +199,6 @@ var WeirdOS;
         };
         return CanvasTextFunctions;
     })();
-    WeirdOS.CanvasTextFunctions = CanvasTextFunctions;
-})(WeirdOS || (WeirdOS = {}));
+    TSOS.CanvasTextFunctions = CanvasTextFunctions;
+})(TSOS || (TSOS = {}));
 //# sourceMappingURL=canvastext.js.map

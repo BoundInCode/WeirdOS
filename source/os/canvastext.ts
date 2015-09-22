@@ -17,7 +17,7 @@
  *       That might be fun.
  * ----------------- */
 
-module WeirdOS {
+module TSOS {
 
     export class CanvasTextFunctions {
 

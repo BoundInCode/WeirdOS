@@ -8,7 +8,7 @@
 
    ------------ */
 
-module WeirdOS {
+module TSOS {
     export class Queue {
         constructor(public q = new Array()) {
         }
