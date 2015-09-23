@@ -9,6 +9,13 @@ body {
 
 #divConsole {
     overflow: scroll;
+    width: 500px;
+    height: 500px;
+    padding: 0 !important;
+}
+
+#consolePanel {
+    width: 502px;
 }
 
 textArea {
@@ -40,10 +47,7 @@ h3 {
 
 #display {
     background-color:#003c4a;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
     border: #003c4a solid 10px;
-    border-radius: 8px;
     cursor: default;
     width: 500px;
 }
