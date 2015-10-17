@@ -18,20 +18,30 @@ var TSOS;
         }
         CommandHistory.prototype.init = function () {
             this.commandStack = [];
-            this.index = 0;
+            this.index = -1;
         };
         CommandHistory.prototype.push = function (command) {
             this.commandStack.unshift(command);
-            this.index = 0;
+            this.index = -1;
+        };
+        CommandHistory.prototype.reset = function () {
+            this.index = -1;
         };
         CommandHistory.prototype.upHistory = function () {
-            var prevCommand = this.commandStack[this.index % this.commandStack.length];
-            this.index++;
+            if (this.commandStack.length === 0) {
+                return "";
+            }
+            this.index = Math.min(this.index + 1, this.commandStack.length - 1);
+            var prevCommand = this.commandStack[this.index];
             return prevCommand;
         };
         CommandHistory.prototype.downHistory = function () {
+            if (this.commandStack.length === 0) {
+                return "";
+            }
             this.index = Math.max(this.index - 1, 0);
-            return this.commandStack[this.index];
+            var nextCommand = this.commandStack[this.index];
+            return nextCommand;
         };
         return CommandHistory;
     })();
@@ -93,7 +103,15 @@ var TSOS;
                         this.putText(this.buffer);
                     }
                 }
+                else if (chr === String.fromCharCode(40)) {
+                    this.clearText(this.buffer);
+                    this.buffer = this.commandHistory.downHistory();
+                    if (this.buffer.length > 0) {
+                        this.putText(this.buffer);
+                    }
+                }
                 else if (chr === String.fromCharCode(8)) {
+                    this.commandHistory.reset();
                     var bufferLen = this.buffer.length;
                     this.clearText(this.buffer.substr(bufferLen - 1));
                     this.buffer = this.buffer.substr(0, bufferLen - 1);

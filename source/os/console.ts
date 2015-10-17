@@ -18,23 +18,34 @@ module TSOS {
         }
         public init(): void {
             this.commandStack = [];
-            this.index = 0;
+            this.index = -1;
         }
 
         public push(command) {
             this.commandStack.unshift(command);
-            this.index = 0;
+            this.index = -1;
+        }
+
+        public reset(){
+            this.index = -1;
         }
 
         public upHistory(): string {
-            var prevCommand = this.commandStack[this.index % this.commandStack.length];
-            this.index++;
+            if (this.commandStack.length === 0) {
+                return "";
+            }
+            this.index = Math.min(this.index+1, this.commandStack.length-1);
+            var prevCommand = this.commandStack[this.index];
             return prevCommand;
         }
 
         public downHistory(): string {
-            this.index = Math.max(this.index - 1, 0);
-            return this.commandStack[this.index];
+            if (this.commandStack.length === 0) {
+                return "";
+            }
+            this.index = Math.max(this.index-1, 0);
+            var nextCommand = this.commandStack[this.index];
+            return nextCommand;
         }
     }
 
@@ -90,7 +101,14 @@ module TSOS {
                     if (this.buffer.length > 0) {
                         this.putText(this.buffer);
                     }
+                } else if (chr === String.fromCharCode(40)) { // Down Arrow
+                    this.clearText(this.buffer);
+                    this.buffer = this.commandHistory.downHistory();
+                    if (this.buffer.length > 0) {
+                        this.putText(this.buffer);
+                    }
                 } else if (chr === String.fromCharCode(8)) { // Backspace
+                    this.commandHistory.reset();
                     var bufferLen = this.buffer.length;
                     this.clearText(this.buffer.substr(bufferLen - 1));
                     this.buffer = this.buffer.substr(0, bufferLen - 1);
