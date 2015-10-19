@@ -4,10 +4,10 @@ var TSOS;
     var MainMemory = (function () {
         function MainMemory(size) {
             this.size = size;
-            this.memory = new Array(size / 2);
+            this.memory = new Array(size);
         }
         MainMemory.prototype.init = function () {
-            for (var i = 0, len = this.memory.length; i < len - 1; i += 2) {
+            for (var i = 0, len = this.memory.length; i < len; i++) {
                 this.memory[i] = "00";
             }
         };

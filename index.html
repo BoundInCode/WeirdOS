@@ -19,6 +19,7 @@
     <script type="text/javascript" src="distrib/host/control.js"></script>
     <script type="text/javascript" src="distrib/host/devices.js"></script>
     <script type="text/javascript" src="distrib/host/cpu.js"></script>
+    <script type="text/javascript" src="distrib/host/mainMemory.js"></script>
 
     <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
     <script type="text/javascript" src="distrib/os/interrupt.js"></script>
@@ -31,11 +32,15 @@
     <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
     <script type="text/javascript" src="distrib/os/userCommand.js"></script>
     <script type="text/javascript" src="distrib/os/kernel.js"></script>
+    <script type="text/javascript" src="distrib/os/pcb.js"></script>
+
+    <script type="text/javascript" src="distrib/os/processManager.js"></script>
+    <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
 
     <!-- Other Routines -->
     <script type="text/javascript" src="distrib/utils.js"></script>
     <!-- Uncomment this line below to enable GLaDOS testing -->
-    <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
+    <!--<script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>-->
 </head>
 
 <body onload="onDocumentLoad()">
@@ -77,6 +82,24 @@
                        value="Reset"
                        tabindex="2"
                        onclick="TSOS.Control.hostBtnReset_click(this);">
+
+                <div class="btn-group" data-toggle="buttons">
+                    <input type="button"
+                           id = "btnSingleStep"
+                           name="brnSingleStep"
+                           class="btn btn-primary"
+                           value="Single Step Mode"
+                           tabindex="2"
+                           onclick="TSOS.Control.hostBtnToggleSingleStep_click(this);">
+
+                    <input type="button"
+                           class="btn btn-primary"
+                           disabled="disabled"
+                           id="btnStep"
+                           value="Step"
+                           tabindex="2"
+                           onclick="TSOS.Control.hostBtnStep_click(this);">
+                </div>
                 <span class="label label-default" id="status">Active</span>
                 <span class="label label-default" id="dateBadge">today</span>
             </div>
@@ -95,7 +118,7 @@
         <div class="col-lg-4">
             <div class="panel panel-default" id="consolePanel">
                 <div class="panel-heading">
-                    Console
+                    <h6 class="panel-title">Console</h6>
                 </div>
                 <div class="panel-body" id="divConsole">
                     <canvas id="display"
@@ -108,21 +131,68 @@
         </div>
         <div class="col-lg-4">
             <div class="panel panel-default">
-                <div class="panel-heading">Host Log</div>
+                <div class="panel-heading">
+                    <h6 class="panel-title">Host Log</h6>
+                </div>
                 <div class="panel-body" id="divLog">
                     <textarea name="taHostLog" id="taHostLog"></textarea>
                 </div>
             </div>
 
             <div class="panel panel-default" id="divUserProgramInput">
-                <div class="panel-heading">Program Input</div>
+                <div class="panel-heading">
+                    <h6 class="panel-title">Program Input</h6>
+                </div>
                 <div class="panel-body">
                     <textarea name="taProgramInput" id="taProgramInput"></textarea>
                 </div>
             </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Next Instruction</h6>
+                </div>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td width="50px" id="sym-value">N/A</td>
+                        <td width="300px" id="ir-value">N/A</td>
+                        <td id="arg-value">N/A</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h6 class="panel-title">CPU</h6>
+                </div>
+
+                <table class="table table-striped text-center">
+                    <thead>
+                    <tr>
+                        <td>PC</td>
+                        <td>Acc</td>
+                        <td>X</td>
+                        <td>Y</td>
+                        <td>Z</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td id="pc-value">0</td>
+                        <td id="acc-value">0</td>
+                        <td id="x-value">0</td>
+                        <td id="y-value">0</td>
+                        <td id="z-value">0</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
+    <script src="distrib/js/jquery-1.11.3.min.js"></script>
+    <script src="distrib/js/bootstrap.min.js"></script>
 </div>
 
 <p class="footerText" style="clear:both;">

@@ -35,6 +35,13 @@ module TSOS {
             _StdIn  = _Console;
             _StdOut = _Console;
 
+            // Initialize Memory and Process Managers
+            _ProcessManager = new ProcessManager();
+            _ProcessManager.init();
+
+            _MemoryManager = new ProcessManager();
+            _MemoryManager.init();
+
             // Load the Keyboard Device Driver
             this.krnTrace("Loading the keyboard device driver.");
             _krnKeyboardDriver = new DeviceDriverKeyboard();     // Construct it.
@@ -172,7 +179,6 @@ module TSOS {
         }
 
         public krnTrapError(msg) {
-            console.log("testing...");
             Control.hostLog("OS ERROR - TRAP: " + msg);
             var bsodImg = new Image();
             bsodImg.onload = function () {

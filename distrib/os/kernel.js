@@ -31,6 +31,11 @@ var TSOS;
             // Initialize standard input and output to the _Console.
             _StdIn = _Console;
             _StdOut = _Console;
+            // Initialize Memory and Process Managers
+            _ProcessManager = new TSOS.ProcessManager();
+            _ProcessManager.init();
+            _MemoryManager = new TSOS.ProcessManager();
+            _MemoryManager.init();
             // Load the Keyboard Device Driver
             this.krnTrace("Loading the keyboard device driver.");
             _krnKeyboardDriver = new TSOS.DeviceDriverKeyboard(); // Construct it.
@@ -153,7 +158,6 @@ var TSOS;
             }
         };
         Kernel.prototype.krnTrapError = function (msg) {
-            console.log("testing...");
             TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
             var bsodImg = new Image();
             bsodImg.onload = function () {

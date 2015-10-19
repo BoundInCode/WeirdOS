@@ -93,7 +93,7 @@ module TSOS {
             _CPU = new Cpu();  // Note: We could simulate multi-core systems by instantiating more than one instance of the CPU here.
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
 
-            _Memory = new MainMemory(256);
+            _Memory = new MainMemory(MEMORY_SIZE);
             _Memory.init();
 
             // ... then set the host clock pulse ...
@@ -101,6 +101,23 @@ module TSOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
+        }
+
+        public static hostBtnToggleSingleStep_click(btn) {
+            _IsSingleStepMode = !_IsSingleStepMode;
+            if(_IsSingleStepMode) {
+                btn.className = "btn btn-primary active";
+                (<HTMLButtonElement>document.getElementById("btnStep")).disabled = false;
+            } else {
+                btn.className = "btn btn-primary";
+                (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
+            }
+        }
+
+        public static hostBtnStep_click(btn) {
+            if(_IsSingleStepMode) {
+                _CPU.isExecuting = true;
+            }
         }
 
         public static hostBtnHaltOS_click(btn): void {

@@ -14,6 +14,7 @@
 const APP_NAME: string    = "WeirdOS";
 const APP_VERSION: string = "0.1a";
 
+const MEMORY_SIZE: number = 768;
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
 const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
@@ -26,6 +27,12 @@ const KEYBOARD_IRQ: number = 1;
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
 var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
+var _Memory: TSOS.MainMemory;
+
+var _MemoryManager: TSOS.MemoryManager;
+var _ProcessManager: TSOS.ProcessManager;
+
+var _IsSingleStepMode: boolean = false;
 
 var _OSclock: number = 0;  // Page 23.
 

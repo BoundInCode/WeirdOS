@@ -49,6 +49,12 @@ module TSOS {
                 "- Loads the user program into the OS memory.");
             this.commandList[this.commandList.length] = sc;
 
+            // run
+            sc = new ShellCommand(this.shellRun,
+                "run",
+                "- Run a program in memory given it's PID.");
+            this.commandList[this.commandList.length] = sc;
+
             // ver
             sc = new ShellCommand(this.shellVer,
                                   "ver",
@@ -254,13 +260,18 @@ module TSOS {
             document.getElementById("energyDiv").hidden = !_Gamify;
         }
 
+        public shellRun(pid){
+            _ProcessManager.run(pid);
+        }
+
         public shellLoad() {
-            var programInput = document.getElementById("taProgramInput").innerHTML;
-            if (programInput.length == 0) {
+            var programInput = document.getElementById("taProgramInput").value;
+            if (programInput.length === 0) {
                 _StdOut.putText("Error. The program input field is empty.");
             } else if(/^[a-fA-F0-9 ]*$/.test(programInput)) {
                 // Create
-                _StdOut.putText("Program successfully loaded.");
+                var pid = _ProcessManager.load(programInput);
+                _StdOut.putText("Program successfully loaded. PID: " + pid);
             } else {
                 _StdOut.putText("Error. Text input must consist only of hex or spaces.");
             }

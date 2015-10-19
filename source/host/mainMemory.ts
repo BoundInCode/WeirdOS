@@ -8,15 +8,14 @@ module TSOS {
 
 
         constructor(private size: number) {
-            this.memory = new Array(size/2);
+            this.memory = new Array(size);
         }
 
         public init(): void {
-            for (var i = 0, len = this.memory.length; i < len-1; i+=2) {
+            for (var i = 0, len = this.memory.length; i < len; i++) {
                 this.memory[i] = "00";
             }
         }
-
 
         public load(program: String, position: number = 0): void {
             for (var i = 0, len = program.length; i < len-1; i+=2) {
