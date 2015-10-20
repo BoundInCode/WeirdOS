@@ -56,6 +56,7 @@ module TSOS {
                     public currentXPosition = 0,
                     public currentYPosition = _DefaultFontSize,
                     public buffer = "",
+                    public regenEnergyTimeoutId = null,
                     public commandHistory:CommandHistory = new CommandHistory()) {
         }
 
@@ -117,12 +118,19 @@ module TSOS {
                         _EnergyLevel = Math.max(0, _EnergyLevel - 5);
                         document.getElementById("energyBar").style.width = _EnergyLevel + "%";
                         if (_EnergyLevel <= 0) {
-                            _Kernel.krnShutdown();
+                            $('#energy-modal').modal('show')
+                            //_Kernel.krnShutdown();
                         }
-                        var lag = (100 - _EnergyLevel) * 5;
-                        this.sleep(lag);
+                        var lag = (100 - _EnergyLevel) * 2;
+                        //this.sleep(lag);
                         this.putText(chr);
                         this.buffer += chr;
+
+                        clearTimeout(this.regenEnergyTimeoutId);
+                        this.regenEnergyTimeoutId = setTimeout(function(){
+                            _EnergyLevel = 100;
+                            document.getElementById("energyBar").style.width = _EnergyLevel + "%";
+                        }, 2000);
                     } else {
                         // This is a "normal" character, so ...
                         // ... draw it on the screen...

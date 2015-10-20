@@ -47,18 +47,20 @@ var TSOS;
     })();
     TSOS.CommandHistory = CommandHistory;
     var Console = (function () {
-        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, commandHistory) {
+        function Console(currentFont, currentFontSize, currentXPosition, currentYPosition, buffer, regenEnergyTimeoutId, commandHistory) {
             if (currentFont === void 0) { currentFont = _DefaultFontFamily; }
             if (currentFontSize === void 0) { currentFontSize = _DefaultFontSize; }
             if (currentXPosition === void 0) { currentXPosition = 0; }
             if (currentYPosition === void 0) { currentYPosition = _DefaultFontSize; }
             if (buffer === void 0) { buffer = ""; }
+            if (regenEnergyTimeoutId === void 0) { regenEnergyTimeoutId = null; }
             if (commandHistory === void 0) { commandHistory = new CommandHistory(); }
             this.currentFont = currentFont;
             this.currentFontSize = currentFontSize;
             this.currentXPosition = currentXPosition;
             this.currentYPosition = currentYPosition;
             this.buffer = buffer;
+            this.regenEnergyTimeoutId = regenEnergyTimeoutId;
             this.commandHistory = commandHistory;
         }
         Console.prototype.init = function () {
@@ -121,12 +123,17 @@ var TSOS;
                         _EnergyLevel = Math.max(0, _EnergyLevel - 5);
                         document.getElementById("energyBar").style.width = _EnergyLevel + "%";
                         if (_EnergyLevel <= 0) {
-                            _Kernel.krnShutdown();
+                            $('#energy-modal').modal('show');
                         }
-                        var lag = (100 - _EnergyLevel) * 5;
-                        this.sleep(lag);
+                        var lag = (100 - _EnergyLevel) * 2;
+                        //this.sleep(lag);
                         this.putText(chr);
                         this.buffer += chr;
+                        clearTimeout(this.regenEnergyTimeoutId);
+                        this.regenEnergyTimeoutId = setTimeout(function () {
+                            _EnergyLevel = 100;
+                            document.getElementById("energyBar").style.width = _EnergyLevel + "%";
+                        }, 2000);
                     }
                     else {
                         // This is a "normal" character, so ...

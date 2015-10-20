@@ -55,8 +55,8 @@ module TSOS {
 
         // AD
         public loadAccFromMem(): void {
-            this.irTD.innerHTML = "Load Accumulator From Memory";
-            this.symTD.innerHTML = "LDA";
+            this.irTD.innerHTML = "Load Accumulator From Memory (LDA)";
+            this.symTD.innerHTML = "AD";
             this.PC++;
 
 
@@ -67,13 +67,14 @@ module TSOS {
             var contentsAtAddress = MemoryManager.read(address, this.CurrentPCB);
             this.Acc = parseInt(contentsAtAddress, 16);
             this.PC++;
+            MemoryManager.read(this.PC, this.CurrentPCB); // Update UI
             this.PC++;
         }
 
         // A9
         public loadAccWithConst(): void {
-            this.irTD.innerHTML = "Load Accumulator With Constant";
-            this.symTD.innerHTML = "LDA";
+            this.irTD.innerHTML = "Load Accumulator With Constant (LDA)";
+            this.symTD.innerHTML = "A9";
             this.PC++;
 
             var constant = MemoryManager.read(this.PC, this.CurrentPCB);
@@ -84,8 +85,8 @@ module TSOS {
         }
 
         public storeAcc(): void {
-            this.irTD.innerHTML = "Store Accumulator";
-            this.symTD.innerHTML = "STA";
+            this.irTD.innerHTML = "Store Accumulator (STA)";
+            this.symTD.innerHTML = "8D";
             this.PC++;
 
             var arg = MemoryManager.read(this.PC, this.CurrentPCB);
@@ -95,12 +96,13 @@ module TSOS {
             var accStr = this.hexStr(this.Acc);
             MemoryManager.write(accStr, address, this.CurrentPCB);
             this.PC++;
+            MemoryManager.read(this.PC, this.CurrentPCB); // Update UI
             this.PC++;
         }
 
         public addWithCarry(): void {
-            this.irTD.innerHTML = "Add With Carry";
-            this.symTD.innerHTML = "ADC";
+            this.irTD.innerHTML = "Add With Carry (ADC)";
+            this.symTD.innerHTML = "6D";
             this.PC++;
 
             var arg = MemoryManager.read(this.PC, this.CurrentPCB);
@@ -110,11 +112,13 @@ module TSOS {
             var contentsFromMemory = MemoryManager.read(address, this.CurrentPCB);
             this.Acc += parseInt(contentsFromMemory, 16);
             this.PC++;
+            MemoryManager.read(this.PC, this.CurrentPCB); // Update UI
+            this.PC++;
         }
 
         public loadXWithConst(): void {
-            this.irTD.innerHTML = "Load X With Constant";
-            this.symTD.innerHTML = "LDX";
+            this.irTD.innerHTML = "Load X With Constant (LDX)";
+            this.symTD.innerHTML = "A2";
             this.PC++;
 
             var constant = parseInt(MemoryManager.read(this.PC, this.CurrentPCB), 16);
@@ -125,8 +129,8 @@ module TSOS {
         }
 
         public loadXFromMem(): void {
-            this.irTD.innerHTML = "Load X From Memory";
-            this.symTD.innerHTML = "LDX";
+            this.irTD.innerHTML = "Load X From Memory (LDX)";
+            this.symTD.innerHTML = "AE";
             this.PC++;
 
             var arg = MemoryManager.read(this.PC, this.CurrentPCB);
@@ -136,12 +140,13 @@ module TSOS {
             var contentsFromMemory = MemoryManager.read(address, this.CurrentPCB);
             this.Xreg = parseInt(contentsFromMemory, 16);
             this.PC++;
+            MemoryManager.read(this.PC, this.CurrentPCB); // Update UI
             this.PC++;
         }
 
         public loadYWithConst(): void {
-            this.irTD.innerHTML = "Load Y with Constant";
-            this.symTD.innerHTML = "LDY";
+            this.irTD.innerHTML = "Load Y with Constant (LDY)";
+            this.symTD.innerHTML = "A0";
             this.PC++;
 
             var constant = MemoryManager.read(this.PC, this.CurrentPCB);
@@ -152,8 +157,8 @@ module TSOS {
         }
 
         public loadYFromMem(): void {
-            this.irTD.innerHTML = "Load Y From Memory";
-            this.symTD.innerHTML = "LDY";
+            this.irTD.innerHTML = "Load Y From Memory (LDY)";
+            this.symTD.innerHTML = "AC";
             this.PC++;
 
             var arg = MemoryManager.read(this.PC, this.CurrentPCB);
@@ -162,29 +167,30 @@ module TSOS {
 
             var contentsFromMemory = MemoryManager.read(address, this.CurrentPCB);
             this.Yreg = parseInt(contentsFromMemory, 16);
-            this.PC++;
+            this.PC++
+            MemoryManager.read(this.PC, this.CurrentPCB); // Update UI
             this.PC++;
         }
 
         public nop(): void {
-            this.irTD.innerHTML = "No Operation";
-            this.symTD.innerHTML = "NOP";
+            this.irTD.innerHTML = "No Operation (NOP)";
+            this.symTD.innerHTML = "EA";
             this.argTD.innerHTML = "N/A";
 
             this.PC++;
         }
 
         public break(): void {
-            this.irTD.innerHTML = "Break";
-            this.symTD.innerHTML = "BRK";
+            this.irTD.innerHTML = "Break (BRK)";
+            this.symTD.innerHTML = "00";
             this.argTD.innerHTML = "N/A";
 
             this.isExecuting = false;
         }
 
         public compareToX(): void {
-            this.irTD.innerHTML = "Compare to X";
-            this.symTD.innerHTML = "CPX";
+            this.irTD.innerHTML = "Compare to X (CPX)";
+            this.symTD.innerHTML = "EC";
             this.PC++;
 
             var arg = MemoryManager.read(this.PC, this.CurrentPCB);
@@ -194,27 +200,27 @@ module TSOS {
             var contentsFromMemory = parseInt(MemoryManager.read(address, this.CurrentPCB), 16);
             this.Zflag = (contentsFromMemory === this.Xreg) ?1 :0;
             this.PC++;
+            MemoryManager.read(this.PC, this.CurrentPCB); // Update UI
             this.PC++;
         }
 
         public branch(): void {
-            this.irTD.innerHTML = "Branch Not Equal";
-            this.symTD.innerHTML = "BNE";
+            this.irTD.innerHTML = "Branch Not Equal (BNE)";
+            this.symTD.innerHTML = "D0";
             this.PC++;
 
             var numBytes = MemoryManager.read(this.PC, this.CurrentPCB);
             this.argTD.innerHTML = numBytes;
 
-            if (this.Zflag) {
+            this.PC++;
+            if (this.Zflag === 0) {
                 this.PC += parseInt(numBytes, 16);
-            } else {
-                this.PC++;
             }
         }
 
         public inc(): void {
-            this.irTD.innerHTML = "Increment";
-            this.symTD.innerHTML = "INC";
+            this.irTD.innerHTML = "Increment (INC)";
+            this.symTD.innerHTML = "EE";
             this.PC++;
 
             var arg = MemoryManager.read(this.PC, this.CurrentPCB);
@@ -225,27 +231,32 @@ module TSOS {
             var incBytes = this.hexStr(contentsFromMemory+1);
             MemoryManager.write(incBytes, address, this.CurrentPCB);
             this.PC++;
+            MemoryManager.read(this.PC, this.CurrentPCB); // Update UI
             this.PC++;
         }
 
         public syscall(): void {
-            this.irTD.innerHTML = "System Call";
-            this.symTD.innerHTML = "SYS";
+            this.irTD.innerHTML = "System Call (SYS)";
+            this.symTD.innerHTML = "FF";
             this.argTD.innerHTML = "N/A";
 
             this.PC++;
             if(this.Xreg === 1) {
                 _StdOut.putText(this.Yreg.toString());
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
             } else if (this.Xreg === 2) {
-                var address = parseInt(MemoryManager.read(this.Yreg, this.CurrentPCB), 16);
+                var address = this.Yreg;
                 var stringChar = MemoryManager.read(address, this.CurrentPCB);
                 while(stringChar !== "00") {
-                    _StdOut.putText(String.fromCharCode(stringChar));
+                    _StdOut.putText(String.fromCharCode(parseInt(stringChar, 16)));
                     address++;
                     stringChar = MemoryManager.read(address, this.CurrentPCB);
                 }
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
             } else {
-                _StdOut.putText("Error. X register must be either 1 or 2.");
+                _Kernel.krnTrapError("Error. X register must be either 1 or 2.")
                 _CPU.isExecuting = false;
             }
         }
@@ -301,8 +312,7 @@ module TSOS {
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
-            // Do the real work here. Be sure to set this.isExecuting appropriately.
-
+            this.PC = this.PC % (this.CurrentPCB.base + 256);
             var instruction: string = MemoryManager.read(this.PC, this.CurrentPCB);
             this.execute(instruction);
 

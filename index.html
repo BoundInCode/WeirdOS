@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="author"             content="Alan G. Labouseur" />
-    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="distrib/css/bootstrap.min.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
     <link href="distrib/css/sb-admin-2.css" rel="stylesheet">
     <link href="distrib/css/morris.css" rel="stylesheet">
     <link href="distrib/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -40,7 +40,7 @@
     <!-- Other Routines -->
     <script type="text/javascript" src="distrib/utils.js"></script>
     <!-- Uncomment this line below to enable GLaDOS testing -->
-    <!--<script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>-->
+    <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
 </head>
 
 <body onload="onDocumentLoad()">
@@ -53,8 +53,26 @@
         </div>
     </nav>
 
+    <!-- Small modal -->
+    <div id="energy-modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">No Energy</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You have run out of energy. Would you like to buy more energy for $0.99?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Wait</button>
+                    <button type="button" class="btn btn-primary">Buy Energy</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <div class="row">
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
         <div class="col-sm-8">
             <div id="divButtonBar" style="margin:4px;">
                 <input type="button"
@@ -106,7 +124,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
         <div class="col-sm-8">
             <div class="progress" id="energyDiv" hidden>
                 <div class="progress-bar progress-bar-striped active" id="energyBar" style="width: 100%">Energy</div>
@@ -114,7 +132,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-2"></div>
+        <div class="col-lg-1"></div>
         <div class="col-lg-4">
             <div class="panel panel-default" id="consolePanel">
                 <div class="panel-heading">
@@ -128,25 +146,31 @@
                     </canvas>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Host Log</h6>
-                </div>
-                <div class="panel-body" id="divLog">
-                    <textarea name="taHostLog" id="taHostLog"></textarea>
-                </div>
-            </div>
-
             <div class="panel panel-default" id="divUserProgramInput">
                 <div class="panel-heading">
                     <h6 class="panel-title">Program Input</h6>
                 </div>
                 <div class="panel-body">
-                    <textarea name="taProgramInput" id="taProgramInput"></textarea>
+                    <!--<pre contenteditable="true" name="taProgramInput-fancy" id="taProgramInput-fancy"></pre>-->
+                    <pre><textarea name="taProgramInput" id="taProgramInput"></textarea></pre>
                 </div>
             </div>
+
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Memory</h6>
+                </div>
+                <div class="panel-body" id="divMem">
+                    <table class="table">
+                        <h4 id="memoryMessage">Turn on WeirdOS to initiate memory.</h4>
+                        <tbody id="memTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
 
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -191,8 +215,27 @@
         </div>
     </div>
 
-    <script src="distrib/js/jquery-1.11.3.min.js"></script>
-    <script src="distrib/js/bootstrap.min.js"></script>
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Host Log</h6>
+                </div>
+                <div class="panel-body" id="divLog">
+                    <textarea name="taHostLog" id="taHostLog"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ad" id="ad-right" hidden>
+        <img src="distrib/images/spectre-ad.jpg" alt="spectre"/>
+    </div>
+    <div class="ad" id="ad-botright" hidden>
+        <img src="distrib/images/lotus-ad.jpg" alt="lotus"/>
+    </div>
+
 </div>
 
 <p class="footerText" style="clear:both;">
@@ -203,5 +246,9 @@
     Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
 </p>
 
+<script src="distrib/js/jquery-1.11.3.min.js"></script>
+<script src="distrib/js/bootstrap.min.js"></script>
+<script src="distrib/js/autosize.min.js"></script>
+<script type="text/javascript" src="distrib/js/smart-ui.js"></script>
 </body>
 </html>

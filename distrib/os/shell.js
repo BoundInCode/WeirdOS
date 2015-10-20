@@ -198,17 +198,26 @@ var TSOS;
             _EnergyLevel = 100;
             document.getElementById("energyBar").style.width = 100 + "%";
             document.getElementById("energyDiv").hidden = !_Gamify;
+            var ads = document.getElementsByClassName("ad");
+            for (var i = 0; i < ads.length; i++) {
+                ads[i].hidden = !_Gamify;
+            }
         };
         Shell.prototype.shellRun = function (pid) {
-            _ProcessManager.run(pid);
+            if (pid === undefined) {
+                _StdOut.putText("Missing argument. run <PID>.");
+            }
+            else {
+                _ProcessManager.run(pid);
+            }
         };
         Shell.prototype.shellLoad = function () {
             var programInput = document.getElementById("taProgramInput").value;
+            //programInput = programInput.replace("[\n\r\s]", "");
             if (programInput.length === 0) {
                 _StdOut.putText("Error. The program input field is empty.");
             }
             else if (/^[a-fA-F0-9 ]*$/.test(programInput)) {
-                // Create
                 var pid = _ProcessManager.load(programInput);
                 _StdOut.putText("Program successfully loaded. PID: " + pid);
             }

@@ -19,7 +19,7 @@ var TSOS;
         function ProcessManager() {
             this.processControlBlocks = new Array();
             this.readyQueue = new TSOS.Queue();
-            this.currentPID = 1;
+            this.currentPID = 0;
         }
         ProcessManager.prototype.init = function () { };
         ProcessManager.prototype.load = function (program) {
@@ -37,8 +37,7 @@ var TSOS;
                 return;
             }
             var process = this.processControlBlocks[pid];
-            //process.processState = ProcessState.READY;
-            //this.readyQueue.enqueue(process);
+            process.processState = ProcessState.READY;
             _CPU.CurrentPCB = process;
             _CPU.isExecuting = true;
         };

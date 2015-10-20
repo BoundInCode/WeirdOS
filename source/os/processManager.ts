@@ -28,7 +28,7 @@ module TSOS {
         constructor() {
             this.processControlBlocks = new Array();
             this.readyQueue = new Queue();
-            this.currentPID = 1;
+            this.currentPID = 0;
         }
 
         public init(): void { }
@@ -52,8 +52,7 @@ module TSOS {
             }
 
             var process = this.processControlBlocks[pid];
-            //process.processState = ProcessState.READY;
-            //this.readyQueue.enqueue(process);
+            process.processState = ProcessState.READY;
 
             _CPU.CurrentPCB = process;
             _CPU.isExecuting = true;
