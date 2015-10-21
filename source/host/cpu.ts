@@ -241,24 +241,9 @@ module TSOS {
             this.argTD.innerHTML = "N/A";
 
             this.PC++;
-            if(this.Xreg === 1) {
-                _StdOut.putText(this.Yreg.toString());
-                _StdOut.advanceLine();
-                _OsShell.putPrompt();
-            } else if (this.Xreg === 2) {
-                var address = this.Yreg;
-                var stringChar = MemoryManager.read(address, this.CurrentPCB);
-                while(stringChar !== "00") {
-                    _StdOut.putText(String.fromCharCode(parseInt(stringChar, 16)));
-                    address++;
-                    stringChar = MemoryManager.read(address, this.CurrentPCB);
-                }
-                _StdOut.advanceLine();
-                _OsShell.putPrompt();
-            } else {
-                _Kernel.krnTrapError("Error. X register must be either 1 or 2.")
-                _CPU.isExecuting = false;
-            }
+            var params = [this.Xreg, this.Yreg];
+            _KernelInterruptQueue.enqueue(new Interrupt(SYSCALL_IRQ, params));
+
         }
 
         public execute(instruction: string): void {

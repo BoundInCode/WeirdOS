@@ -100,6 +100,33 @@ var TSOS;
             TSOS.Devices.hostDisableKeyboardInterrupt();
             // Put more here.
         };
+        Kernel.prototype.krnHandleSysCall = function (params) {
+            var x = params[0];
+            var y = params[1];
+            console.log("x: " + x);
+            console.log("y: " + y);
+            if (x === 1) {
+                _StdOut.putText(y.toString());
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+            }
+            else if (x === 2) {
+                var address = y;
+                var stringChar = TSOS.MemoryManager.read(address, _CPU.CurrentPCB);
+                while (stringChar !== "00") {
+                    _StdOut.putText(String.fromCharCode(parseInt(stringChar, 16)));
+                    address++;
+                    stringChar = TSOS.MemoryManager.read(address, _CPU.CurrentPCB);
+                }
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+            }
+            else {
+                console.log("help");
+                this.krnTrapError("Error. X register must be either 1 or 2.");
+                _CPU.isExecuting = false;
+            }
+        };
         Kernel.prototype.krnInterruptHandler = function (irq, params) {
             // This is the Interrupt Handler Routine.  See pages 8 and 560.
             // Trace our entrance here so we can compute Interrupt Latency by analyzing the log file later on. Page 766.
@@ -115,6 +142,9 @@ var TSOS;
                 case KEYBOARD_IRQ:
                     _krnKeyboardDriver.isr(params); // Kernel mode device driver
                     _StdIn.handleInput();
+                    break;
+                case SYSCALL_IRQ:
+                    this.krnHandleSysCall(params);
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
@@ -159,6 +189,9 @@ var TSOS;
         };
         Kernel.prototype.krnTrapError = function (msg) {
             TSOS.Control.hostLog("OS ERROR - TRAP: " + msg);
+            // Reset Canvas size to 500x500
+            _Canvas.height = 500;
+            _Canvas.width = 500;
             var bsodImg = new Image();
             bsodImg.onload = function () {
                 _Canvas.getContext('2d').drawImage(bsodImg, 0, 0, 500, 500);
