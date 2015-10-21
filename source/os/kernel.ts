@@ -120,9 +120,6 @@ module TSOS {
             var x = params[0];
             var y = params[1];
 
-            console.log("x: " + x);
-            console.log("y: " + y);
-
             if(x === 1) {
                 _StdOut.putText(y.toString());
                 _StdOut.advanceLine();
@@ -138,7 +135,6 @@ module TSOS {
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
             } else {
-                console.log("help");
                 this.krnTrapError("Error. X register must be either 1 or 2.")
                 _CPU.isExecuting = false;
             }

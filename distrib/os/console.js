@@ -125,10 +125,14 @@ var TSOS;
                         if (_EnergyLevel <= 0) {
                             $('#energy-modal').modal('show');
                         }
-                        var lag = (100 - _EnergyLevel) * 2;
+                        // Screenshake
+                        this.shake(100 - _EnergyLevel);
+                        // Artificial Lag
+                        var lag = (100 - _EnergyLevel);
                         this.sleep(lag);
                         this.putText(chr);
                         this.buffer += chr;
+                        // Recharge energy
                         clearTimeout(this.regenEnergyTimeoutId);
                         this.regenEnergyTimeoutId = setTimeout(function () {
                             _EnergyLevel = 100;
@@ -144,6 +148,18 @@ var TSOS;
                     }
                 }
             }
+        };
+        Console.prototype.shake = function (power) {
+            var interval = 100;
+            var distance = power * 0.2;
+            var times = power * 0.05;
+            $("body").css('position', 'relative');
+            for (var iter = 0; iter < (times + 1); iter++) {
+                $("body").animate({
+                    left: ((iter % 2 == 0 ? distance : distance * -1))
+                }, interval);
+            }
+            $("body").animate({ left: 0 }, interval);
         };
         Console.prototype.sleep = function (milliseconds) {
             var e = new Date().getTime() + (milliseconds);
