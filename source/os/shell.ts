@@ -259,7 +259,7 @@ module TSOS {
             document.getElementById("energyBar").style.width = 100 + "%";
             document.getElementById("energyDiv").hidden = !_Gamify;
 
-            var ads = document.getElementsByClassName("ad");
+            var ads = document.getElementsByClassName("gamify-img");
             for(var i = 0; i < ads.length; i++) {
                 (<HTMLElement>ads[i]).hidden = !_Gamify;
             }

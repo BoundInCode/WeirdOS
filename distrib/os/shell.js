@@ -198,7 +198,7 @@ var TSOS;
             _EnergyLevel = 100;
             document.getElementById("energyBar").style.width = 100 + "%";
             document.getElementById("energyDiv").hidden = !_Gamify;
-            var ads = document.getElementsByClassName("ad");
+            var ads = document.getElementsByClassName("gamify-img");
             for (var i = 0; i < ads.length; i++) {
                 ads[i].hidden = !_Gamify;
             }
