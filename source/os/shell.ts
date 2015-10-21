@@ -259,11 +259,12 @@ module TSOS {
             document.getElementById("energyBar").style.width = 100 + "%";
             document.getElementById("energyDiv").hidden = !_Gamify;
 
-            var ads = document.getElementsByClassName("ad");
-            for(var i = 0; i < ads.length; i++) {
-                ads[i].hidden = !_Gamify;
-            }
-
+            $(".ad").toggle();
+            return;
+            //var ads = document.getElementsByClassName("ad");
+            //for(var i = 0; i < ads.length; i++) {
+            //    (<HTMLElement>ads[i]).hidden = !_Gamify;
+            //}
         }
 
         public shellRun(pid){
@@ -275,7 +276,7 @@ module TSOS {
         }
 
         public shellLoad() {
-            var programInput = document.getElementById("taProgramInput").value;
+            var programInput = (<HTMLTextAreaElement>document.getElementById("taProgramInput")).value;
             //programInput = programInput.replace("[\n\r\s]", "");
 
             if (programInput.length === 0) {

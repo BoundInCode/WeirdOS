@@ -122,7 +122,7 @@ module TSOS {
                             //_Kernel.krnShutdown();
                         }
                         var lag = (100 - _EnergyLevel) * 2;
-                        //this.sleep(lag);
+                        this.sleep(lag);
                         this.putText(chr);
                         this.buffer += chr;
 

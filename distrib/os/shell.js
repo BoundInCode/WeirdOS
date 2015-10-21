@@ -198,10 +198,12 @@ var TSOS;
             _EnergyLevel = 100;
             document.getElementById("energyBar").style.width = 100 + "%";
             document.getElementById("energyDiv").hidden = !_Gamify;
-            var ads = document.getElementsByClassName("ad");
-            for (var i = 0; i < ads.length; i++) {
-                ads[i].hidden = !_Gamify;
-            }
+            $(".ad").toggle();
+            return;
+            //var ads = document.getElementsByClassName("ad");
+            //for(var i = 0; i < ads.length; i++) {
+            //    (<HTMLElement>ads[i]).hidden = !_Gamify;
+            //}
         };
         Shell.prototype.shellRun = function (pid) {
             if (pid === undefined) {
