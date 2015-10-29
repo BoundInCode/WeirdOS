@@ -35,6 +35,11 @@ module TSOS {
 
         public load(program: string): number {
             var programText = program.replace(/\s/g, '');
+
+            // Clear old program
+            MemoryManager.clear(0, 255);
+
+            // Load new program
             var base = MemoryManager.allocate(programText);
             var limit = base + programText.length;
 
@@ -54,6 +59,7 @@ module TSOS {
             var process = this.processControlBlocks[pid];
             process.processState = ProcessState.READY;
 
+            _CPU.PC = process.pc;
             _CPU.CurrentPCB = process;
             _CPU.isExecuting = true;
         }

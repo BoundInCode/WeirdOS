@@ -24,6 +24,9 @@ var TSOS;
         ProcessManager.prototype.init = function () { };
         ProcessManager.prototype.load = function (program) {
             var programText = program.replace(/\s/g, '');
+            // Clear old program
+            TSOS.MemoryManager.clear(0, 255);
+            // Load new program
             var base = TSOS.MemoryManager.allocate(programText);
             var limit = base + programText.length;
             var processControlBlock = new TSOS.PCB(this.currentPID, base, limit);
@@ -38,6 +41,7 @@ var TSOS;
             }
             var process = this.processControlBlocks[pid];
             process.processState = ProcessState.READY;
+            _CPU.PC = process.pc;
             _CPU.CurrentPCB = process;
             _CPU.isExecuting = true;
         };

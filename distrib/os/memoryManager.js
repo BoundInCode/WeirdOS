@@ -10,24 +10,26 @@ var TSOS;
         function MemoryManager() {
         }
         MemoryManager.prototype.init = function () { };
+        MemoryManager.clear = function (start, end) {
+            for (var i = start; i < end; i++) {
+                _Memory.write("00", i);
+            }
+        };
         MemoryManager.allocate = function (program) {
             var len = program.length;
             var oldBase = this.base;
             for (var i = 0; i < len / 2; i++) {
-                //_Memory[this.base + i] = program.substr(i*2, 2);
                 _Memory.write(program.substr(i * 2, 2), this.base + i);
             }
-            this.base += len;
+            //this.base += len;
             return oldBase;
         };
         MemoryManager.read = function (location, pcb) {
-            //return _Memory[pcb.base + location];
             return _Memory.read(pcb.base + location);
         };
         MemoryManager.write = function (bytes, location, pcb) {
             var len = bytes.length;
             for (var i = 0; i < len / 2; i++) {
-                //_Memory[pcb.base + location + i] = bytes.substr(i*2, 2);
                 _Memory.write(bytes.substr(i * 2, 2), pcb.base + location + i);
             }
         };
