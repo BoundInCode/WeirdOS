@@ -24,16 +24,26 @@ module TSOS {
         public static allocate(program: string): number {
             var len = program.length;
             var oldBase = this.base;
-            for (var i = 0; i < len/2; i++) {
-                _Memory.write(program.substr(i*2, 2), this.base + i);
+
+            if (this.base >= this.SIZE) {
+                return -1;
             }
 
-            //this.base += len;
+            for (var i = 0; i < len/2; i++) {
+                _Memory.write(program.substr(i+i, 2), this.base + i);
+            }
+            this.base += 256;
             return oldBase;
         }
 
         public static read(location: number, pcb: PCB): string {
             return _Memory.read(pcb.base + location);
+        }
+
+        public static clearAll(): void {
+            for (var i = 0; i < this.SIZE; i++) {
+                _Memory.clear(i);
+            }
         }
 
         public static write(bytes: string, location: number, pcb: PCB): void {

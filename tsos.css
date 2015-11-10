@@ -44,7 +44,7 @@ body {
 }
 
 #divMem {
-    height: 384px;
+    height: 265px;
     overflow-y: auto;
 }
 
@@ -84,6 +84,15 @@ textArea {
 
 #divUserProgramInput .panel-body {
     padding: 0;
+}
+
+
+#divUserProgramInput {
+    width: 500px;
+}
+
+#divHostLog {
+    width: 500px;
 }
 
 h1 {

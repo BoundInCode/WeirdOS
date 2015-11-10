@@ -44,7 +44,7 @@
     <!-- Other Routines -->
     <script type="text/javascript" src="distrib/utils.js"></script>
     <!-- Uncomment this line below to enable GLaDOS testing -->
-    <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
+    <!--<script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>-->
 </head>
 
 <body onload="onDocumentLoad()">
@@ -155,8 +155,18 @@
                     <h6 class="panel-title">Program Input</h6>
                 </div>
                 <div class="panel-body">
-                    <!--<pre contenteditable="true" name="taProgramInput-fancy" id="taProgramInput-fancy"></pre>-->
-                    <pre><textarea name="taProgramInput" id="taProgramInput"></textarea></pre>
+                    <pre>
+                        <textarea name="taProgramInput" id="taProgramInput"></textarea>
+                    </pre>
+                </div>
+            </div>
+
+            <div class="panel panel-default" id="divHostLog">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Host Log</h6>
+                </div>
+                <div class="panel-body" id="divLog">
+                    <textarea name="taHostLog" id="taHostLog"></textarea>
                 </div>
             </div>
 
@@ -216,21 +226,35 @@
                     </tbody>
                 </table>
             </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Resident List</h6>
+                </div>
+
+                <table class="table table-striped text-center">
+                    <thead>
+                    <tr>
+                        <td>PID</td>
+                        <td>PC</td>
+                        <td>Acc</td>
+                        <td>X</td>
+                        <td>Y</td>
+                        <td>Z</td>
+                        <td>Base</td>
+                        <td>Limit</td>
+                        <td>State</td>
+                    </tr>
+                    </thead>
+                    <tbody id="residentList">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-1"></div>
-        <div class="col-lg-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Host Log</h6>
-                </div>
-                <div class="panel-body" id="divLog">
-                    <textarea name="taHostLog" id="taHostLog"></textarea>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="gamify-img" id="ad-right" hidden>

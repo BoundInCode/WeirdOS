@@ -47,3 +47,4 @@ var TSOS;
     })();
     TSOS.MemoryManager = MemoryManager;
 })(TSOS || (TSOS = {}));
+//# sourceMappingURL=memoryManager.js.map

@@ -50,6 +50,30 @@ var TSOS;
             this.irTD = document.getElementById("ir-value");
             this.argTD = document.getElementById("arg-value");
         };
+        Cpu.prototype.stop = function () {
+            this.CurrentPCB.pc = this.PC;
+            this.PC = 0;
+            this.CurrentPCB.acc = this.Acc;
+            this.Acc = 0;
+            this.CurrentPCB.x = this.Xreg;
+            this.Xreg = 0;
+            this.CurrentPCB.y = this.Yreg;
+            this.Yreg = 0;
+            this.CurrentPCB.z = this.Zflag === 1;
+            this.Zflag = 0;
+            _ProcessManager.updatePCB(this.CurrentPCB);
+            this.isExecuting = false;
+            this.CurrentPCB = null;
+        };
+        Cpu.prototype.start = function (process) {
+            this.PC = process.pc;
+            this.Acc = process.acc;
+            this.Xreg = process.x;
+            this.Yreg = process.y;
+            this.Zflag = (process.z) ? 1 : 0;
+            this.CurrentPCB = process;
+            this.isExecuting = true;
+        };
         Cpu.prototype.hexStr = function (num) {
             var str = num.toString(16);
             if (str.length === 1) {
@@ -161,7 +185,10 @@ var TSOS;
             this.irTD.innerHTML = "Break (BRK)";
             this.symTD.innerHTML = "00";
             this.argTD.innerHTML = "N/A";
-            this.isExecuting = false;
+            //this.isExecuting = false;
+            this.CurrentPCB.processState = TSOS.ProcessState.TERMINATED;
+            _ProcessManager.updatePCB(this.CurrentPCB);
+            this.stop();
         };
         Cpu.prototype.compareToX = function () {
             this.irTD.innerHTML = "Compare to X (CPX)";
@@ -259,7 +286,8 @@ var TSOS;
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
-            this.PC = this.PC % (this.CurrentPCB.base + 256);
+            // Update IR and PC registers
+            this.PC = this.PC % 256;
             var instruction = TSOS.MemoryManager.read(this.PC, this.CurrentPCB);
             this.execute(instruction);
             // Update UI on CPU Cycle

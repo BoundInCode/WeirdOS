@@ -50,3 +50,4 @@ var TSOS;
     })();
     TSOS.MainMemory = MainMemory;
 })(TSOS || (TSOS = {}));
+//# sourceMappingURL=mainMemory.js.map

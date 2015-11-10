@@ -23,6 +23,8 @@ const KEYBOARD_IRQ: number = 1;
 
 const SYSCALL_IRQ: number = 2;
 
+const CONTEXT_SWITCH_IRQ: number = 3;
+
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
@@ -36,12 +38,13 @@ var _ProcessManager: TSOS.ProcessManager;
 var _IsSingleStepMode: boolean = false;
 
 var _OSclock: number = 0;  // Page 23.
+var _Quantum: number = 6;
 
 var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
 
 var _Canvas: HTMLCanvasElement;         // Initialized in Control.hostInit().
 var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.
-var _DefaultFontFamily: string = "sans";        // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
+var _DefaultFontFamily: string = "monospace";        // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
 var _DefaultFontSize: number = 24;
 var _DefaultTextColor: string = "white";
 var _FontHeightMargin: number = 4;              // Additional space added to font size when advancing a line.

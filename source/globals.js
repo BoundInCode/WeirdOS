@@ -64,3 +64,4 @@ var _EnergyLevel = 100;
 var onDocumentLoad = function () {
     TSOS.Control.hostInit();
 };
+//# sourceMappingURL=globals.js.map

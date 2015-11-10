@@ -23,11 +23,13 @@ module TSOS {
 
                 // Initiate UI
                 if (i % 8 === 0) {
-                    nextRow += "</tr>";
-                    this.memTable.innerHTML += nextRow;
                     nextRow = "<tr><td>0x" + i.toString(16) + "</td>"
                 }
-                nextRow += "<td id='mem"+ i +"'>00</td>";
+                nextRow += "<td id='mem" + i + "'>00</td>";
+                if (i % 8 === 7) {
+                    nextRow += "</tr>";
+                    this.memTable.innerHTML += nextRow;
+                }
             }
         }
 
@@ -49,6 +51,14 @@ module TSOS {
             // Update UI
             var memId = "mem" + pos;
             (<HTMLTableElement>document.getElementById(memId)).innerHTML = byteStr;
+        }
+
+        public clear(pos: number): void {
+            this.write("00", pos);
+
+            // Update UI
+            var memId = "mem" + pos;
+            (<HTMLTableElement>document.getElementById(memId)).className = "";
         }
 
     }

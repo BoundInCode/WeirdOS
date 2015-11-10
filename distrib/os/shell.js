@@ -34,8 +34,20 @@ var TSOS;
             // load
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Loads the user program into the OS memory.");
             this.commandList[this.commandList.length] = sc;
+            // clear memory
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- Clear all the memory partitions.");
+            this.commandList[this.commandList.length] = sc;
             // run
             sc = new TSOS.ShellCommand(this.shellRun, "run", "- Run a program in memory given it's PID.");
+            this.commandList[this.commandList.length] = sc;
+            // run all
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Run all the programs loaded in the resident list.");
+            this.commandList[this.commandList.length] = sc;
+            // quantum
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "- Set the Round Robin quantum (Number of clock ticks spent running each process.");
+            this.commandList[this.commandList.length] = sc;
+            // ps
+            sc = new TSOS.ShellCommand(this.shellProcesses, "ps", "- Show a list of the currently running processes.");
             this.commandList[this.commandList.length] = sc;
             // ver
             sc = new TSOS.ShellCommand(this.shellVer, "ver", "- Displays the current version data.");
@@ -48,6 +60,9 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             // whereami
             sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", "- Tells the user where in the world they are.");
+            this.commandList[this.commandList.length] = sc;
+            // help
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "- Terminate a currently running process.");
             this.commandList[this.commandList.length] = sc;
             // help
             sc = new TSOS.ShellCommand(this.shellHelp, "help", "- This is the help command. Seek help.");
@@ -203,26 +218,71 @@ var TSOS;
                 ads[i].hidden = !_Gamify;
             }
         };
+        Shell.prototype.shellProcesses = function () {
+            _StdOut.putText("PID  Process");
+            _StdOut.advanceLine();
+            _StdOut.putText("--  ------");
+            _StdOut.advanceLine();
+            for (var i = 0; i < _ProcessManager.residentList.length; i++) {
+                var process = _ProcessManager.residentList[i];
+                if (process.processState === TSOS.ProcessState.RUNNING ||
+                    process.processState === TSOS.ProcessState.READY) {
+                    _StdOut.putText(process.pid + "     " + process.processState);
+                    _StdOut.advanceLine();
+                }
+            }
+        };
         Shell.prototype.shellRun = function (pid) {
             if (pid === undefined) {
                 _StdOut.putText("Missing argument. run <PID>.");
             }
             else {
-                _ProcessManager.run(pid);
+                _ProcessManager.run(parseInt(pid));
+            }
+        };
+        Shell.prototype.shellClearMem = function () {
+            TSOS.MemoryManager.clearAll();
+            _StdOut.putText("Memory successfully cleared.");
+        };
+        Shell.prototype.shellRunAll = function () {
+            _ProcessManager.runAll();
+        };
+        Shell.prototype.shellQuantum = function (arg) {
+            var quantum = parseInt(arg);
+            if (quantum > 0) {
+                _Quantum = quantum;
+                _StdOut.putText("Quantum successfully set to " + quantum + ".");
+            }
+            else {
+                _StdOut.putText("Quantum could not be set to " + quantum + ".");
             }
         };
         Shell.prototype.shellLoad = function () {
             var programInput = document.getElementById("taProgramInput").value;
-            //programInput = programInput.replace("[\n\r\s]", "");
+            programInput = programInput.replace(/(\r\n|\n|\r)/gm, "");
             if (programInput.length === 0) {
                 _StdOut.putText("Error. The program input field is empty.");
             }
             else if (/^[a-fA-F0-9 ]*$/.test(programInput)) {
                 var pid = _ProcessManager.load(programInput);
-                _StdOut.putText("Program successfully loaded. PID: " + pid);
+                if (pid === -1) {
+                    _StdOut.putText("Error. Cannot load more than 3 programs at a time.");
+                }
+                else {
+                    _StdOut.putText("Program successfully loaded. PID: " + pid);
+                }
             }
             else {
                 _StdOut.putText("Error. Text input must consist only of hex or spaces.");
+            }
+        };
+        Shell.prototype.shellKill = function (pid) {
+            var success = _ProcessManager.kill(parseInt(pid));
+            if (success) {
+                _StdOut.putText("Pid " + pid + " successfully removed.");
+            }
+            else {
+                _StdOut.putText("Error.");
             }
         };
         Shell.prototype.shellBSOD = function (args) {

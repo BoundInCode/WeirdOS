@@ -1,71 +1,49 @@
 ///<reference path="../globals.ts" />
-
 /* ------------
  processManager.ts
 
  Requires globals.ts
  ------------ */
-
-module TSOS {
-
-    export enum ProcessState {
-        NEW,
-        WAITING,
-        READY,
-        HALTED,
-        RUNNING,
-        TERMINATED
-    }
-
-    export class ProcessManager {
-
-        private static currentPID: number;
-
-        public residentList: Array<TSOS.PCB>;
-        public readyQueue: Queue;
-        private currentPID: number;
-        public cycle: number;
-        public residentListDiv: any;
-
-        constructor() {
+var TSOS;
+(function (TSOS) {
+    (function (ProcessState) {
+        ProcessState[ProcessState["NEW"] = 0] = "NEW";
+        ProcessState[ProcessState["WAITING"] = 1] = "WAITING";
+        ProcessState[ProcessState["READY"] = 2] = "READY";
+        ProcessState[ProcessState["HALTED"] = 3] = "HALTED";
+        ProcessState[ProcessState["RUNNING"] = 4] = "RUNNING";
+        ProcessState[ProcessState["TERMINATED"] = 5] = "TERMINATED";
+    })(TSOS.ProcessState || (TSOS.ProcessState = {}));
+    var ProcessState = TSOS.ProcessState;
+    var ProcessManager = (function () {
+        function ProcessManager() {
             this.residentList = new Array();
             this.readyQueue = new Queue();
             this.currentPID = 0;
             this.cycle = 0;
-            this.residentListDiv = <HTMLCanvasElement>document.getElementById("residentList");
+            this.residentListDiv = document.getElementById("residentList");
         }
-
-        public init(): void { }
-
-        public load(program: string): number {
+        ProcessManager.prototype.init = function () { };
+        ProcessManager.prototype.load = function (program) {
             var programText = program.replace(/\s/g, '');
-
             // Clear old program
             //MemoryManager.clear(0, 255);
-
             // Load new program
             var base = MemoryManager.allocate(programText);
-            var limit = base + 256;// programText.length;
-
+            var limit = base + 256; // programText.length;
             if (base === -1) {
                 return -1;
             }
-
             var processControlBlock = new PCB(this.currentPID, base, limit);
             //this.residentList.push(processControlBlock);
-            this.addPCB(processControlBlock)
-
+            this.addPCB(processControlBlock);
             this.currentPID++;
             return processControlBlock.pid;
-        }
-
-        public addPCB(pcb: PCB): void {
+        };
+        ProcessManager.prototype.addPCB = function (pcb) {
             this.residentList.push(pcb);
-
-
-            var processName: string;
-
-            switch pcb.processState {
+            var processName;
+            switch (pcb.processState) {
                 case ProcessState.NEW:
                     processName = "New";
                     break;
@@ -85,7 +63,6 @@ module TSOS {
                     processName = "Terminated";
                     break;
             }
-
             var innerHTML = "";
             innerHTML += "<tr id='pcb" + pcb.pid + "'>";
             innerHTML += "<td>" + pcb.pid + "</td>";
@@ -98,16 +75,12 @@ module TSOS {
             innerHTML += "<td>" + pcb.limit + "</td>";
             innerHTML += "<td>" + processName + "</td>";
             innerHTML += "</tr>";
-
             this.residentListDiv.innerHTML += innerHTML;
-        }
-
-        public updatePCB(pcb: PCB): void {
-            var pcbTR = <HTMLCanvasElement>document.getElementById("pcb" + pcb.pid);
-
-            var processName: string;
-
-            switch pcb.processState {
+        };
+        ProcessManager.prototype.updatePCB = function (pcb) {
+            var pcbTR = document.getElementById("pcb" + pcb.pid);
+            var processName;
+            switch (pcb.processState) {
                 case ProcessState.NEW:
                     processName = "New";
                     break;
@@ -127,7 +100,6 @@ module TSOS {
                     processName = "Terminated";
                     break;
             }
-
             var innerHTML = "";
             innerHTML += "<td>" + pcb.pid + "</td>";
             innerHTML += "<td>" + pcb.pc + "</td>";
@@ -138,11 +110,9 @@ module TSOS {
             innerHTML += "<td>" + pcb.base + "</td>";
             innerHTML += "<td>" + pcb.limit + "</td>";
             innerHTML += "<td>" + processName + "</td>";
-
             pcbTR.innerHTML = innerHTML;
-        }
-
-        public kill(pid: number): boolean {
+        };
+        ProcessManager.prototype.kill = function (pid) {
             for (var i = 0; i < this.residentList.length; i++) {
                 if (this.residentList[i].pid === pid) {
                     var process = this.residentList[pid];
@@ -155,14 +125,12 @@ module TSOS {
                 }
             }
             return false;
-        }
-
-        public nextProcess(): PCB {
+        };
+        ProcessManager.prototype.nextProcess = function () {
             // Round Robin
             return this.readyQueue.dequeue();
-        }
-
-        public schedule(): void {
+        };
+        ProcessManager.prototype.schedule = function () {
             if (_CPU.isExecuting) {
                 if (this.cycle >= _Quantum) {
                     if (!this.readyQueue.isEmpty()) {
@@ -170,21 +138,20 @@ module TSOS {
                         this.cycle = 0;
                     }
                 }
-            } else { // Nothing is executing. Pop a process off the ready queue.
+            }
+            else {
                 if (!this.readyQueue.isEmpty()) {
                     _KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_SWITCH_IRQ, null));
                     this.cycle = 0;
                 }
             }
-        }
-
-        public runAll(): void {
-           for (var i = 0; i < this.residentList.length; i++) {
-               this.run(this.residentList[i].pid);
-           }
-        }
-
-        public run(pid: number): void {
+        };
+        ProcessManager.prototype.runAll = function () {
+            for (var i = 0; i < this.residentList.length; i++) {
+                this.run(this.residentList[i].pid);
+            }
+        };
+        ProcessManager.prototype.run = function (pid) {
             for (var i = 0; i < this.residentList.length; i++) {
                 if (this.residentList[i].pid === pid) {
                     var process = this.residentList[pid];
@@ -194,6 +161,9 @@ module TSOS {
                 }
             }
             _StdOut.putText("Process " + pid + " does not exist.");
-        }
-    }
-}
+        };
+        return ProcessManager;
+    })();
+    TSOS.ProcessManager = ProcessManager;
+})(TSOS || (TSOS = {}));
+//# sourceMappingURL=processManager.js.map

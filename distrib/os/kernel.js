@@ -34,7 +34,7 @@ var TSOS;
             // Initialize Memory and Process Managers
             _ProcessManager = new TSOS.ProcessManager();
             _ProcessManager.init();
-            _MemoryManager = new TSOS.ProcessManager();
+            _MemoryManager = new TSOS.MemoryManager();
             _MemoryManager.init();
             // Load the Keyboard Device Driver
             this.krnTrace("Loading the keyboard device driver.");
@@ -81,11 +81,13 @@ var TSOS;
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             }
             else if (_CPU.isExecuting) {
+                _ProcessManager.cycle++;
                 _CPU.cycle();
             }
             else {
                 this.krnTrace("Idle");
             }
+            _ProcessManager.schedule();
         };
         //
         // Interrupt Handling
@@ -143,9 +145,21 @@ var TSOS;
                 case SYSCALL_IRQ:
                     this.krnHandleSysCall(params);
                     break;
+                case CONTEXT_SWITCH_IRQ:
+                    this.krnContextSwitch(params);
+                    break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
+        };
+        Kernel.prototype.krnContextSwitch = function (params) {
+            if (_CPU.CurrentPCB) {
+                _CPU.CurrentPCB.processState = TSOS.ProcessState.READY;
+                _ProcessManager.readyQueue.enqueue(_CPU.CurrentPCB);
+                _CPU.stop();
+            }
+            var process = _ProcessManager.nextProcess();
+            _CPU.start(process);
         };
         Kernel.prototype.krnTimerISR = function () {
             // The built-in TIMER (not clock) Interrupt Service Routine (as opposed to an ISR coming from a device driver). {
