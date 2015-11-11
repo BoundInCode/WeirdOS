@@ -61,7 +61,6 @@ module TSOS {
         public addPCB(pcb: PCB): void {
             this.residentList.push(pcb);
 
-
             var processName: string;
 
             switch (pcb.processState) {
