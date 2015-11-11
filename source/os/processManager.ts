@@ -52,7 +52,6 @@ module TSOS {
             }
 
             var processControlBlock = new PCB(this.currentPID, base, limit);
-            //this.residentList.push(processControlBlock);
             this.addPCB(processControlBlock)
 
             this.currentPID++;
@@ -65,7 +64,7 @@ module TSOS {
 
             var processName: string;
 
-            switch pcb.processState {
+            switch (pcb.processState) {
                 case ProcessState.NEW:
                     processName = "New";
                     break;
@@ -107,7 +106,7 @@ module TSOS {
 
             var processName: string;
 
-            switch pcb.processState {
+            switch (pcb.processState) {
                 case ProcessState.NEW:
                     processName = "New";
                     break;
@@ -142,15 +141,24 @@ module TSOS {
             pcbTR.innerHTML = innerHTML;
         }
 
+        public killAll(): void {
+            for (var i = 0; i < this.residentList.length; i++) {
+                var process = this.residentList[i];
+                if (process.processState !== ProcessState.TERMINATED) {
+                    this.kill(process.pid);
+                }
+            }
+        }
+
         public kill(pid: number): boolean {
             for (var i = 0; i < this.residentList.length; i++) {
                 if (this.residentList[i].pid === pid) {
-                    var process = this.residentList[pid];
+                    var process = this.residentList[i];
                     if (process.processState === ProcessState.RUNNING) {
-                        _CPU.CurrentPCB = null;
                         _CPU.isExecuting = false;
                     }
                     process.processState = ProcessState.TERMINATED;
+                    _ProcessManager.updatePCB(process);
                     return true;
                 }
             }
@@ -159,10 +167,15 @@ module TSOS {
 
         public nextProcess(): PCB {
             // Round Robin
-            return this.readyQueue.dequeue();
+            var retVal = null;
+            if (this.readyQueue.getSize() > 0) {
+                retVal = this.readyQueue.dequeue();
+            }
+            return retVal;
         }
 
         public schedule(): void {
+
             if (_CPU.isExecuting) {
                 if (this.cycle >= _Quantum) {
                     if (!this.readyQueue.isEmpty()) {
@@ -180,16 +193,18 @@ module TSOS {
 
         public runAll(): void {
            for (var i = 0; i < this.residentList.length; i++) {
-               this.run(this.residentList[i].pid);
+                   this.run(this.residentList[i].pid);
            }
         }
 
         public run(pid: number): void {
             for (var i = 0; i < this.residentList.length; i++) {
                 if (this.residentList[i].pid === pid) {
-                    var process = this.residentList[pid];
-                    process.processState = ProcessState.READY;
-                    this.readyQueue.enqueue(process);
+                    var process = this.residentList[i];
+                    if (process.processState === ProcessState.NEW) {
+                        process.processState = ProcessState.READY;
+                        this.readyQueue.enqueue(process);
+                    }
                     return;
                 }
             }

@@ -43,6 +43,9 @@ var TSOS;
             // run all
             sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Run all the programs loaded in the resident list.");
             this.commandList[this.commandList.length] = sc;
+            //kill all
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", "- Kill all the programs loaded in the resident list.");
+            this.commandList[this.commandList.length] = sc;
             // quantum
             sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "- Set the Round Robin quantum (Number of clock ticks spent running each process.");
             this.commandList[this.commandList.length] = sc;
@@ -284,6 +287,9 @@ var TSOS;
             else {
                 _StdOut.putText("Error.");
             }
+        };
+        Shell.prototype.shellKillAll = function () {
+            _ProcessManager.killAll();
         };
         Shell.prototype.shellBSOD = function (args) {
             // Display BSOD

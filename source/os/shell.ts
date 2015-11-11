@@ -67,6 +67,12 @@ module TSOS {
                 "- Run all the programs loaded in the resident list.");
             this.commandList[this.commandList.length] = sc;
 
+            //kill all
+            sc = new ShellCommand(this.shellKillAll,
+                "killall",
+                "- Kill all the programs loaded in the resident list.");
+            this.commandList[this.commandList.length] = sc;
+
             // quantum
             sc = new ShellCommand(this.shellQuantum,
                 "quantum",
@@ -365,7 +371,10 @@ module TSOS {
             } else {
                 _StdOut.putText("Error.");
             }
+        }
 
+        public shellKillAll() {
+            _ProcessManager.killAll();
         }
 
         public shellBSOD(args) {

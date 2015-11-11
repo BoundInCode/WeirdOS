@@ -69,6 +69,9 @@ module TSOS {
             this.Yreg = process.y;
             this.Zflag = (process.z) ?1 :0;
             this.CurrentPCB = process;
+
+            process.processState = ProcessState.RUNNING;
+            _ProcessManager.updatePCB(this.CurrentPCB);
             this.isExecuting = true;
         }
 

@@ -35,7 +35,6 @@ var TSOS;
                 return -1;
             }
             var processControlBlock = new TSOS.PCB(this.currentPID, base, limit);
-            //this.residentList.push(processControlBlock);
             this.addPCB(processControlBlock);
             this.currentPID++;
             return processControlBlock.pid;
@@ -112,15 +111,23 @@ var TSOS;
             innerHTML += "<td>" + processName + "</td>";
             pcbTR.innerHTML = innerHTML;
         };
+        ProcessManager.prototype.killAll = function () {
+            for (var i = 0; i < this.residentList.length; i++) {
+                var process = this.residentList[i];
+                if (process.processState !== ProcessState.TERMINATED) {
+                    this.kill(process.pid);
+                }
+            }
+        };
         ProcessManager.prototype.kill = function (pid) {
             for (var i = 0; i < this.residentList.length; i++) {
                 if (this.residentList[i].pid === pid) {
-                    var process = this.residentList[pid];
+                    var process = this.residentList[i];
                     if (process.processState === ProcessState.RUNNING) {
-                        _CPU.CurrentPCB = null;
                         _CPU.isExecuting = false;
                     }
                     process.processState = ProcessState.TERMINATED;
+                    _ProcessManager.updatePCB(process);
                     return true;
                 }
             }
@@ -128,7 +135,11 @@ var TSOS;
         };
         ProcessManager.prototype.nextProcess = function () {
             // Round Robin
-            return this.readyQueue.dequeue();
+            var retVal = null;
+            if (this.readyQueue.getSize() > 0) {
+                retVal = this.readyQueue.dequeue();
+            }
+            return retVal;
         };
         ProcessManager.prototype.schedule = function () {
             if (_CPU.isExecuting) {
@@ -154,9 +165,11 @@ var TSOS;
         ProcessManager.prototype.run = function (pid) {
             for (var i = 0; i < this.residentList.length; i++) {
                 if (this.residentList[i].pid === pid) {
-                    var process = this.residentList[pid];
-                    process.processState = ProcessState.READY;
-                    this.readyQueue.enqueue(process);
+                    var process = this.residentList[i];
+                    if (process.processState === ProcessState.NEW) {
+                        process.processState = ProcessState.READY;
+                        this.readyQueue.enqueue(process);
+                    }
                     return;
                 }
             }

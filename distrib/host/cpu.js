@@ -72,6 +72,8 @@ var TSOS;
             this.Yreg = process.y;
             this.Zflag = (process.z) ? 1 : 0;
             this.CurrentPCB = process;
+            process.processState = TSOS.ProcessState.RUNNING;
+            _ProcessManager.updatePCB(this.CurrentPCB);
             this.isExecuting = true;
         };
         Cpu.prototype.hexStr = function (num) {

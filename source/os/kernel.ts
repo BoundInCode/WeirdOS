@@ -172,13 +172,15 @@ module TSOS {
         }
 
         public krnContextSwitch(params) {
-            if (_CPU.CurrentPCB) {
+            if (_CPU.CurrentPCB != null && _CPU.CurrentPCB.processState !== ProcessState.TERMINATED) {
                 _CPU.CurrentPCB.processState = ProcessState.READY;
                 _ProcessManager.readyQueue.enqueue(_CPU.CurrentPCB);
                 _CPU.stop();
             }
             var process = _ProcessManager.nextProcess();
-            _CPU.start(process);
+            if (process != null) {
+                _CPU.start(process);
+            }
         }
 
         public krnTimerISR() {
