@@ -78,25 +78,25 @@ var TSOS;
         };
         ProcessManager.prototype.updatePCB = function (pcb) {
             var pcbTR = document.getElementById("pcb" + pcb.pid);
-            var processName;
+            var processState;
             switch (pcb.processState) {
                 case ProcessState.NEW:
-                    processName = "New";
+                    processState = "New";
                     break;
                 case ProcessState.WAITING:
-                    processName = "Waiting";
+                    processState = "Waiting";
                     break;
                 case ProcessState.READY:
-                    processName = "Ready";
+                    processState = "Ready";
                     break;
                 case ProcessState.HALTED:
-                    processName = "Halted";
+                    processState = "Halted";
                     break;
                 case ProcessState.RUNNING:
-                    processName = "Running";
+                    processState = "Running";
                     break;
                 case ProcessState.TERMINATED:
-                    processName = "Terminated";
+                    processState = "Terminated";
                     break;
             }
             var innerHTML = "";
@@ -108,7 +108,9 @@ var TSOS;
             innerHTML += "<td>" + pcb.z + "</td>";
             innerHTML += "<td>" + pcb.base + "</td>";
             innerHTML += "<td>" + pcb.limit + "</td>";
-            innerHTML += "<td>" + processName + "</td>";
+            innerHTML += "<td>" + processState + "</td>";
+            //innerHTML += "<td>" + pcb.getTurnAroundTime() + "</td>";
+            //innerHTML += "<td>" + pcb.waitTime + "</td>";
             pcbTR.innerHTML = innerHTML;
         };
         ProcessManager.prototype.killAll = function () {
@@ -142,6 +144,10 @@ var TSOS;
             return retVal;
         };
         ProcessManager.prototype.schedule = function () {
+            // Increment Wait times
+            for (var i = 0, len = this.readyQueue.q.length; i < len; i++) {
+                this.readyQueue.q[i].waitTime++;
+            }
             if (_CPU.isExecuting) {
                 if (this.cycle >= _Quantum) {
                     if (!this.readyQueue.isEmpty()) {

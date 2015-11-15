@@ -153,6 +153,7 @@ var TSOS;
             }
         };
         Kernel.prototype.krnContextSwitch = function (params) {
+            this.krnTrace("Context Switch. Swapping out currently running process.");
             if (_CPU.CurrentPCB != null && _CPU.CurrentPCB.processState !== TSOS.ProcessState.TERMINATED) {
                 _CPU.CurrentPCB.processState = TSOS.ProcessState.READY;
                 _ProcessManager.readyQueue.enqueue(_CPU.CurrentPCB);
