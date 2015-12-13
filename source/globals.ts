@@ -20,10 +20,9 @@ const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 100
 const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (interrupt priority).
                               // NOTE: The timer is different from hardware/host clock pulses. Don't confuse these.
 const KEYBOARD_IRQ: number = 1;
-
 const SYSCALL_IRQ: number = 2;
-
 const CONTEXT_SWITCH_IRQ: number = 3;
+const DISK_OPERATION_IRQ: number = 4;
 
 //
 // Global Variables
@@ -31,6 +30,7 @@ const CONTEXT_SWITCH_IRQ: number = 3;
 //
 var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
 var _Memory: TSOS.MainMemory;
+var _HDD: TSOS.HDD;
 
 var _MemoryManager: TSOS.MemoryManager;
 var _ProcessManager: TSOS.ProcessManager;
@@ -71,6 +71,7 @@ var _SarcasticMode: boolean = false;
 
 // Global Device Driver Objects - page 12
 var _krnKeyboardDriver; //  = null;
+var _krnFsDriver;
 
 var _hardwareClockID: number = null;
 

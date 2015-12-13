@@ -19,12 +19,14 @@ var TIMER_IRQ = 0; // Pages 23 (timer), 9 (interrupts), and 561 (interrupt prior
 var KEYBOARD_IRQ = 1;
 var SYSCALL_IRQ = 2;
 var CONTEXT_SWITCH_IRQ = 3;
+var DISK_OPERATION_IRQ = 4;
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
 var _CPU; // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
 var _Memory;
+var _HDD;
 var _MemoryManager;
 var _ProcessManager;
 var _IsSingleStepMode = false;
@@ -55,6 +57,7 @@ var _OsShell;
 var _SarcasticMode = false;
 // Global Device Driver Objects - page 12
 var _krnKeyboardDriver; //  = null;
+var _krnFsDriver;
 var _hardwareClockID = null;
 // For testing (and enrichment)...
 var Glados = null; // This is the function Glados() in glados.js on Labouseur.com.

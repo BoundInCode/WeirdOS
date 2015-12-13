@@ -40,6 +40,12 @@ var TSOS;
             // run
             sc = new TSOS.ShellCommand(this.shellRun, "run", "- Run a program in memory given it's PID.");
             this.commandList[this.commandList.length] = sc;
+            // set schedule
+            sc = new TSOS.ShellCommand(this.shellSetSchedule, "setschedule", "- Sets the CPU's scheduling algorithm. Options: Round Robin (rr), First Come, First Serve (fcfs), or Priority (priority)");
+            this.commandList[this.commandList.length] = sc;
+            // get schedule
+            sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "- Gets the CPU's current scheduling algorithm.");
+            this.commandList[this.commandList.length] = sc;
             // run all
             sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Run all the programs loaded in the resident list.");
             this.commandList[this.commandList.length] = sc;
@@ -51,6 +57,24 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             // ps
             sc = new TSOS.ShellCommand(this.shellProcesses, "ps", "- Show a list of the currently running processes.");
+            this.commandList[this.commandList.length] = sc;
+            // create file
+            sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "- Create a file <filename> on the hard drive.");
+            this.commandList[this.commandList.length] = sc;
+            // write file
+            sc = new TSOS.ShellCommand(this.shellWriteFile, "write", "- Writes a file <filename> with the contents <data> on the hard drive.");
+            this.commandList[this.commandList.length] = sc;
+            // read file
+            sc = new TSOS.ShellCommand(this.shellReadFile, "read", "- Reads the contents of a file <filename> on the hard drive.");
+            this.commandList[this.commandList.length] = sc;
+            // delete file
+            sc = new TSOS.ShellCommand(this.shellDeleteFile, "delete", "- Deletes a file <filename> from the hard drive.");
+            this.commandList[this.commandList.length] = sc;
+            // format
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "- Formats the hard drive. All blocks, sectors, and tracks will be reinitialized.");
+            this.commandList[this.commandList.length] = sc;
+            // ls
+            sc = new TSOS.ShellCommand(this.shellLs, "ls", "- Lists all the files on the hard drive.");
             this.commandList[this.commandList.length] = sc;
             // ver
             sc = new TSOS.ShellCommand(this.shellVer, "ver", "- Displays the current version data.");
@@ -134,6 +158,10 @@ var TSOS;
                 }
                 else if (this.apologies.indexOf("[" + cmd + "]") >= 0) {
                     this.execute(this.shellApology);
+                }
+                else if (/^\s*$/.test(cmd)) {
+                    _StdOut.advanceLine();
+                    this.putPrompt();
                 }
                 else {
                     this.execute(this.shellInvalidCommand);
@@ -247,6 +275,28 @@ var TSOS;
             TSOS.MemoryManager.clearAll();
             _StdOut.putText("Memory successfully cleared.");
         };
+        Shell.prototype.shellGetSchedule = function () {
+            _StdOut.putText("Current Process Schedule: " + _ProcessManager.currentSchedulingMethod);
+        };
+        Shell.prototype.shellSetSchedule = function (args) {
+            var schedule = args[0];
+            switch (schedule) {
+                case "rr":
+                    _ProcessManager.currentSchedulingMethod = "rr";
+                    _StdOut.putText("Switching CPU scheduling algorithm to Round Robin.");
+                    break;
+                case "fcfs":
+                    _ProcessManager.currentSchedulingMethod = "fcfs";
+                    _StdOut.putText("Switching CPU scheduling algorithm to First Come, First Serve.");
+                    break;
+                case "priority":
+                    _ProcessManager.currentSchedulingMethod = "priority";
+                    _StdOut.putText("Switching CPU scheduling algorithm to Priority.");
+                    break;
+                default:
+                    _StdOut.putText("Error. Priority Algorithm '" + schedule + "' does not exist. Try 'rr', 'fcfs', or 'priority' instead.");
+            }
+        };
         Shell.prototype.shellRunAll = function () {
             _ProcessManager.runAll();
         };
@@ -269,7 +319,7 @@ var TSOS;
             else if (/^[a-fA-F0-9 ]*$/.test(programInput)) {
                 var pid = _ProcessManager.load(programInput);
                 if (pid === -1) {
-                    _StdOut.putText("Error. Cannot load more than 3 programs at a time.");
+                    _StdOut.putText("Out of Memory. Could not load program.");
                 }
                 else {
                     _StdOut.putText("Program successfully loaded. PID: " + pid);
@@ -290,6 +340,37 @@ var TSOS;
         };
         Shell.prototype.shellKillAll = function () {
             _ProcessManager.killAll();
+        };
+        Shell.prototype.shellCreateFile = function (filename) {
+            var params = ["create", filename];
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_OPERATION_IRQ, params));
+        };
+        Shell.prototype.shellWriteFile = function (args) {
+            var filename = args[0];
+            var data = args.splice(1).join(" ");
+            if (/^"[^"]+"$/.test(data)) {
+                var params = ["write", filename, data.slice(1, -1)];
+                _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_OPERATION_IRQ, params));
+            }
+            else {
+                _StdOut.putText("File contents must be wrapped in quotes.");
+            }
+        };
+        Shell.prototype.shellReadFile = function (filename) {
+            var params = ["read", filename];
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_OPERATION_IRQ, params));
+        };
+        Shell.prototype.shellDeleteFile = function (filename) {
+            var params = ["delete", filename];
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_OPERATION_IRQ, params));
+        };
+        Shell.prototype.shellFormat = function () {
+            var params = ["format"];
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_OPERATION_IRQ, params));
+        };
+        Shell.prototype.shellLs = function () {
+            var params = ["ls"];
+            _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_OPERATION_IRQ, params));
         };
         Shell.prototype.shellBSOD = function (args) {
             // Display BSOD

@@ -19,13 +19,14 @@ module TSOS {
 
     export class ProcessManager {
 
-        private static currentPID: number;
-
+        public currentSchedulingMethod: string
         public residentList: Array<TSOS.PCB>;
         public readyQueue: Queue;
-        private currentPID: number;
         public cycle: number;
         public residentListDiv: any;
+
+        private currentPID: number;
+        private static currentPID: number;
 
         constructor() {
             this.residentList = new Array();
@@ -33,6 +34,7 @@ module TSOS {
             this.currentPID = 0;
             this.cycle = 0;
             this.residentListDiv = <HTMLCanvasElement>document.getElementById("residentList");
+            this.currentSchedulingMethod = "rr";
         }
 
         public init(): void { }
@@ -47,12 +49,14 @@ module TSOS {
             var base = MemoryManager.allocate(programText);
             var limit = base + 256;// programText.length;
 
-            if (base === -1) {
-                return -1;
-            }
-
             var processControlBlock = new PCB(this.currentPID, base, limit);
             this.addPCB(processControlBlock)
+
+            // Out of Memory. Store on disk
+            if (base === -1) {
+                _krnFsDriver.allocate(program);
+                processControlBlock.onDisk = true;
+            }
 
             this.currentPID++;
             return processControlBlock.pid;
@@ -103,26 +107,26 @@ module TSOS {
         public updatePCB(pcb: PCB): void {
             var pcbTR = <HTMLCanvasElement>document.getElementById("pcb" + pcb.pid);
 
-            var processName: string;
+            var processState: string;
 
             switch (pcb.processState) {
                 case ProcessState.NEW:
-                    processName = "New";
+                    processState = "New";
                     break;
                 case ProcessState.WAITING:
-                    processName = "Waiting";
+                    processState = "Waiting";
                     break;
                 case ProcessState.READY:
-                    processName = "Ready";
+                    processState = "Ready";
                     break;
                 case ProcessState.HALTED:
-                    processName = "Halted";
+                    processState = "Halted";
                     break;
                 case ProcessState.RUNNING:
-                    processName = "Running";
+                    processState = "Running";
                     break;
                 case ProcessState.TERMINATED:
-                    processName = "Terminated";
+                    processState = "Terminated";
                     break;
             }
 
@@ -135,7 +139,9 @@ module TSOS {
             innerHTML += "<td>" + pcb.z + "</td>";
             innerHTML += "<td>" + pcb.base + "</td>";
             innerHTML += "<td>" + pcb.limit + "</td>";
-            innerHTML += "<td>" + processName + "</td>";
+            innerHTML += "<td>" + processState + "</td>";
+            //innerHTML += "<td>" + pcb.getTurnAroundTime() + "</td>";
+            //innerHTML += "<td>" + pcb.waitTime + "</td>";
 
             pcbTR.innerHTML = innerHTML;
         }
@@ -165,16 +171,20 @@ module TSOS {
         }
 
         public nextProcess(): PCB {
-            // Round Robin
             var retVal = null;
-            if (this.readyQueue.getSize() > 0) {
-                retVal = this.readyQueue.dequeue();
+            if (this.currentSchedulingMethod === "priority") {
+                // priority
+
+            } else {
+                // rr or fcfs
+                if (this.readyQueue.getSize() > 0) {
+                    retVal = this.readyQueue.dequeue();
+                }
             }
             return retVal;
         }
 
-        public schedule(): void {
-
+        public roundRobin(): void {
             if (_CPU.isExecuting) {
                 if (this.cycle >= _Quantum) {
                     if (!this.readyQueue.isEmpty()) {
@@ -187,6 +197,40 @@ module TSOS {
                     _KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_SWITCH_IRQ, null));
                     this.cycle = 0;
                 }
+            }
+        }
+
+        public firstComeFirstServe(): void {
+            if (!_CPU.isExecuting) {
+                if (!this.readyQueue.isEmpty()) {
+                    _KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_SWITCH_IRQ, null));
+                    this.cycle = 0;
+                }
+            }
+        }
+
+        public priority(): void {
+            // TODO: Implement
+
+        }
+
+        public schedule(): void {
+
+            // Increment Wait times
+            for (var i = 0, len = this.readyQueue.q.length; i < len; i++) {
+                this.readyQueue.q[i].waitTime++;
+            }
+
+            switch(this.currentSchedulingMethod) {
+                case "rr":
+                    this.roundRobin();
+                    break;
+                case "priority":
+                    this.priority();
+                    break;
+                case "fcfs":
+                    this.firstComeFirstServe();
+                    break;
             }
         }
 

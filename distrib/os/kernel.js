@@ -41,6 +41,10 @@ var TSOS;
             _krnKeyboardDriver = new TSOS.DeviceDriverKeyboard(); // Construct it.
             _krnKeyboardDriver.driverEntry(); // Call the driverEntry() initialization routine.
             this.krnTrace(_krnKeyboardDriver.status);
+            this.krnTrace("Loading the filesystem device driver.");
+            _krnFsDriver = new TSOS.DeviceDriverFileSystem();
+            _krnFsDriver.driverEntry();
+            this.krnTrace(_krnFsDriver.status);
             //
             // ... more?
             //
@@ -147,6 +151,9 @@ var TSOS;
                     break;
                 case CONTEXT_SWITCH_IRQ:
                     this.krnContextSwitch(params);
+                    break;
+                case DISK_OPERATION_IRQ:
+                    _krnFsDriver.isr(params);
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");

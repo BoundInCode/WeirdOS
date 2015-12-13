@@ -19,7 +19,6 @@ var TSOS;
             this.startTime = _OSclock;
             this.endTime = _OSclock;
             this.waitTime = 0;
-            this.onDisk = false;
         }
         PCB.prototype.getTurnAroundTime = function () {
             return this.endTime - this.startTime;
@@ -28,3 +27,4 @@ var TSOS;
     })();
     TSOS.PCB = PCB;
 })(TSOS || (TSOS = {}));
+//# sourceMappingURL=pcb.js.map

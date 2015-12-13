@@ -22,6 +22,7 @@ var TSOS;
             this.currentPID = 0;
             this.cycle = 0;
             this.residentListDiv = document.getElementById("residentList");
+            this.currentSchedulingMethod = "rr";
         }
         ProcessManager.prototype.init = function () { };
         ProcessManager.prototype.load = function (program) {
@@ -31,11 +32,13 @@ var TSOS;
             // Load new program
             var base = TSOS.MemoryManager.allocate(programText);
             var limit = base + 256; // programText.length;
-            if (base === -1) {
-                return -1;
-            }
             var processControlBlock = new TSOS.PCB(this.currentPID, base, limit);
             this.addPCB(processControlBlock);
+            // Out of Memory. Store on disk
+            if (base === -1) {
+                _krnFsDriver.allocate(program);
+                processControlBlock.onDisk = true;
+            }
             this.currentPID++;
             return processControlBlock.pid;
         };
@@ -136,18 +139,18 @@ var TSOS;
             return false;
         };
         ProcessManager.prototype.nextProcess = function () {
-            // Round Robin
             var retVal = null;
-            if (this.readyQueue.getSize() > 0) {
-                retVal = this.readyQueue.dequeue();
+            if (this.currentSchedulingMethod === "priority") {
+            }
+            else {
+                // rr or fcfs
+                if (this.readyQueue.getSize() > 0) {
+                    retVal = this.readyQueue.dequeue();
+                }
             }
             return retVal;
         };
-        ProcessManager.prototype.schedule = function () {
-            // Increment Wait times
-            for (var i = 0, len = this.readyQueue.q.length; i < len; i++) {
-                this.readyQueue.q[i].waitTime++;
-            }
+        ProcessManager.prototype.roundRobin = function () {
             if (_CPU.isExecuting) {
                 if (this.cycle >= _Quantum) {
                     if (!this.readyQueue.isEmpty()) {
@@ -161,6 +164,34 @@ var TSOS;
                     _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, null));
                     this.cycle = 0;
                 }
+            }
+        };
+        ProcessManager.prototype.firstComeFirstServe = function () {
+            if (!_CPU.isExecuting) {
+                if (!this.readyQueue.isEmpty()) {
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, null));
+                    this.cycle = 0;
+                }
+            }
+        };
+        ProcessManager.prototype.priority = function () {
+            // TODO: Implement
+        };
+        ProcessManager.prototype.schedule = function () {
+            // Increment Wait times
+            for (var i = 0, len = this.readyQueue.q.length; i < len; i++) {
+                this.readyQueue.q[i].waitTime++;
+            }
+            switch (this.currentSchedulingMethod) {
+                case "rr":
+                    this.roundRobin();
+                    break;
+                case "priority":
+                    this.priority();
+                    break;
+                case "fcfs":
+                    this.firstComeFirstServe();
+                    break;
             }
         };
         ProcessManager.prototype.runAll = function () {

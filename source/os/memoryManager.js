@@ -16,21 +16,16 @@ var TSOS;
             }
         };
         MemoryManager.allocate = function (program) {
-            // Find free block
-            var blockStart = -1;
-            for (var i = 0; i < this.SIZE; i += 256) {
-                if (_Memory.read(i) === "00") {
-                    blockStart = i;
-                    break;
-                }
-            }
-            if (blockStart == -1) {
+            var len = program.length;
+            var oldBase = this.base;
+            if (this.base >= this.SIZE) {
                 return -1;
             }
-            for (var i = 0; i < program.length / 2; i++) {
-                _Memory.write(program.substr(i + i, 2), blockStart + i);
+            for (var i = 0; i < len / 2; i++) {
+                _Memory.write(program.substr(i + i, 2), this.base + i);
             }
-            return blockStart;
+            this.base += 256;
+            return oldBase;
         };
         MemoryManager.read = function (location, pcb) {
             return _Memory.read(pcb.base + location);
@@ -47,7 +42,9 @@ var TSOS;
             }
         };
         MemoryManager.SIZE = 768;
+        MemoryManager.base = 0;
         return MemoryManager;
     })();
     TSOS.MemoryManager = MemoryManager;
 })(TSOS || (TSOS = {}));
+//# sourceMappingURL=memoryManager.js.map

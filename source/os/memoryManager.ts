@@ -11,7 +11,6 @@ module TSOS {
     export class MemoryManager {
 
         private static SIZE = 768;
-        private static base = 0;
 
         public init(): void { }
 
@@ -22,18 +21,20 @@ module TSOS {
         }
 
         public static allocate(program: string): number {
-            var len = program.length;
-            var oldBase = this.base;
-
-            if (this.base >= this.SIZE) {
-                return -1;
+            // Find free block
+            var blockStart = -1;
+            for (var i = 0; i < this.SIZE; i+=256) {
+                if (_Memory.read(i) === "00") {
+                    blockStart = i;
+                    break;
+                }
             }
+            if (blockStart == -1) { return -1; }
 
-            for (var i = 0; i < len/2; i++) {
-                _Memory.write(program.substr(i+i, 2), this.base + i);
+            for (var i = 0; i < program.length/2; i++) {
+                _Memory.write(program.substr(i+i, 2), blockStart + i);
             }
-            this.base += 256;
-            return oldBase;
+            return blockStart;
         }
 
         public static read(location: number, pcb: PCB): string {

@@ -1,9 +1,7 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../utils.ts" />
-    ///<reference path="shellCommand.ts" />
-    ///<reference path="userCommand.ts" />
-
-
+///<reference path="shellCommand.ts" />
+///<reference path="userCommand.ts" />
 /* ------------
    Shell.ts
 
@@ -12,214 +10,119 @@
     Note: While fun and learning are the primary goals of all enrichment center activities,
           serious injuries may occur when trying to write your own Operating System.
    ------------ */
-
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
-
-module TSOS {
-    export class Shell {
-        // Properties
-        public promptStr = "> ";
-        public commandList = [];
-        public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
-        public apologies = "[sorry]";
-
-        constructor() {
+var TSOS;
+(function (TSOS) {
+    var Shell = (function () {
+        function Shell() {
+            // Properties
+            this.promptStr = "> ";
+            this.commandList = [];
+            this.curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
+            this.apologies = "[sorry]";
         }
-
-        public init() {
+        Shell.prototype.init = function () {
             var sc;
             //
             // Load the command list.
-
             // gamify
-            sc = new ShellCommand(this.shellGamify,
-                "gamify",
-                "- Toggles instant gamification. (Warning: Very Obnoxious)");
+            sc = new TSOS.ShellCommand(this.shellGamify, "gamify", "- Toggles instant gamification. (Warning: Very Obnoxious)");
             this.commandList[this.commandList.length] = sc;
-
             // status
-            sc = new ShellCommand(this.shellStatus,
-                 "status",
-                 "- Set the status in the Host.");
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "- Set the status in the Host.");
             this.commandList[this.commandList.length] = sc;
-
             // load
-            sc = new ShellCommand(this.shellLoad,
-                "load",
-                "- Loads the user program into the OS memory.");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Loads the user program into the OS memory.");
             this.commandList[this.commandList.length] = sc;
-
             // clear memory
-            sc = new ShellCommand(this.shellClearMem,
-                "clearmem",
-                "- Clear all the memory partitions.");
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- Clear all the memory partitions.");
             this.commandList[this.commandList.length] = sc;
-
             // run
-            sc = new ShellCommand(this.shellRun,
-                "run",
-                "- Run a program in memory given it's PID.");
+            sc = new TSOS.ShellCommand(this.shellRun, "run", "- Run a program in memory given it's PID.");
             this.commandList[this.commandList.length] = sc;
-
             // set schedule
-            sc = new ShellCommand(this.shellSetSchedule,
-                "setschedule",
-                "- Sets the CPU's scheduling algorithm. Options: Round Robin (rr), First Come, First Serve (fcfs), or Priority (priority)");
+            sc = new TSOS.ShellCommand(this.shellSetSchedule, "setschedule", "- Sets the CPU's scheduling algorithm. Options: Round Robin (rr), First Come, First Serve (fcfs), or Priority (priority)");
             this.commandList[this.commandList.length] = sc;
-
             // get schedule
-            sc = new ShellCommand(this.shellGetSchedule,
-                "getschedule",
-                "- Gets the CPU's current scheduling algorithm.");
+            sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "- Gets the CPU's current scheduling algorithm.");
             this.commandList[this.commandList.length] = sc;
-
             // run all
-            sc = new ShellCommand(this.shellRunAll,
-                "runall",
-                "- Run all the programs loaded in the resident list.");
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Run all the programs loaded in the resident list.");
             this.commandList[this.commandList.length] = sc;
-
             //kill all
-            sc = new ShellCommand(this.shellKillAll,
-                "killall",
-                "- Kill all the programs loaded in the resident list.");
+            sc = new TSOS.ShellCommand(this.shellKillAll, "killall", "- Kill all the programs loaded in the resident list.");
             this.commandList[this.commandList.length] = sc;
-
             // quantum
-            sc = new ShellCommand(this.shellQuantum,
-                "quantum",
-                "- Set the Round Robin quantum (Number of clock ticks spent running each process.");
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "- Set the Round Robin quantum (Number of clock ticks spent running each process.");
             this.commandList[this.commandList.length] = sc;
-
             // ps
-            sc = new ShellCommand(this.shellProcesses,
-                "ps",
-                "- Show a list of the currently running processes.");
+            sc = new TSOS.ShellCommand(this.shellProcesses, "ps", "- Show a list of the currently running processes.");
             this.commandList[this.commandList.length] = sc;
-
             // create file
-            sc = new ShellCommand(this.shellCreateFile,
-                "create",
-                "- Create a file <filename> on the hard drive.");
+            sc = new TSOS.ShellCommand(this.shellCreateFile, "create", "- Create a file <filename> on the hard drive.");
             this.commandList[this.commandList.length] = sc;
-
             // write file
-            sc = new ShellCommand(this.shellWriteFile,
-                "write",
-                "- Writes a file <filename> with the contents <data> on the hard drive.");
+            sc = new TSOS.ShellCommand(this.shellWriteFile, "write", "- Writes a file <filename> with the contents <data> on the hard drive.");
             this.commandList[this.commandList.length] = sc;
-
             // read file
-            sc = new ShellCommand(this.shellReadFile,
-                "read",
-                "- Reads the contents of a file <filename> on the hard drive.");
+            sc = new TSOS.ShellCommand(this.shellReadFile, "read", "- Reads the contents of a file <filename> on the hard drive.");
             this.commandList[this.commandList.length] = sc;
-
             // delete file
-            sc = new ShellCommand(this.shellDeleteFile,
-                "delete",
-                "- Deletes a file <filename> from the hard drive.");
+            sc = new TSOS.ShellCommand(this.shellDeleteFile, "delete", "- Deletes a file <filename> from the hard drive.");
             this.commandList[this.commandList.length] = sc;
-
             // format
-            sc = new ShellCommand(this.shellFormat,
-                "format",
-                "- Formats the hard drive. All blocks, sectors, and tracks will be reinitialized.");
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "- Formats the hard drive. All blocks, sectors, and tracks will be reinitialized.");
             this.commandList[this.commandList.length] = sc;
-
             // ls
-            sc = new ShellCommand(this.shellLs,
-                "ls",
-                "- Lists all the files on the hard drive.");
+            sc = new TSOS.ShellCommand(this.shellLs, "ls", "- Lists all the files on the hard drive.");
             this.commandList[this.commandList.length] = sc;
-
-
             // ver
-            sc = new ShellCommand(this.shellVer,
-                                  "ver",
-                                  "- Displays the current version data.");
+            sc = new TSOS.ShellCommand(this.shellVer, "ver", "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
-
             // Tests BSOD
-            sc = new ShellCommand(this.shellBSOD,
-                "bsod",
-                "- Shows the Blue Screen of Death for the OS. (For testing only.)");
+            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", "- Shows the Blue Screen of Death for the OS. (For testing only.)");
             this.commandList[this.commandList.length] = sc;
-
             // date
-            sc = new ShellCommand(this.shellDate,
-                                  "date",
-                                  "- Displays the current date.");
+            sc = new TSOS.ShellCommand(this.shellDate, "date", "- Displays the current date.");
             this.commandList[this.commandList.length] = sc;
-
             // whereami
-            sc = new ShellCommand(this.shellWhereami,
-                "whereami",
-                "- Tells the user where in the world they are.");
+            sc = new TSOS.ShellCommand(this.shellWhereami, "whereami", "- Tells the user where in the world they are.");
             this.commandList[this.commandList.length] = sc;
-
             // help
-            sc = new ShellCommand(this.shellKill,
-                "kill",
-                "- Terminate a currently running process.");
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "- Terminate a currently running process.");
             this.commandList[this.commandList.length] = sc;
-
             // help
-            sc = new ShellCommand(this.shellHelp,
-                                  "help",
-                                  "- This is the help command. Seek help.");
+            sc = new TSOS.ShellCommand(this.shellHelp, "help", "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
-
             // shutdown
-            sc = new ShellCommand(this.shellShutdown,
-                                  "shutdown",
-                                  "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
+            sc = new TSOS.ShellCommand(this.shellShutdown, "shutdown", "- Shuts down the virtual OS but leaves the underlying host / hardware simulation running.");
             this.commandList[this.commandList.length] = sc;
-
             // cls
-            sc = new ShellCommand(this.shellCls,
-                                  "cls",
-                                  "- Clears the screen and resets the cursor position.");
+            sc = new TSOS.ShellCommand(this.shellCls, "cls", "- Clears the screen and resets the cursor position.");
             this.commandList[this.commandList.length] = sc;
-
             // man <topic>
-            sc = new ShellCommand(this.shellMan,
-                                  "man",
-                                  "<topic> - Displays the MANual page for <topic>.");
+            sc = new TSOS.ShellCommand(this.shellMan, "man", "<topic> - Displays the MANual page for <topic>.");
             this.commandList[this.commandList.length] = sc;
-
             // trace <on | off>
-            sc = new ShellCommand(this.shellTrace,
-                                  "trace",
-                                  "<on | off> - Turns the OS trace on or off.");
+            sc = new TSOS.ShellCommand(this.shellTrace, "trace", "<on | off> - Turns the OS trace on or off.");
             this.commandList[this.commandList.length] = sc;
-
             // rot13 <string>
-            sc = new ShellCommand(this.shellRot13,
-                                  "rot13",
-                                  "<string> - Does rot13 obfuscation on <string>.");
+            sc = new TSOS.ShellCommand(this.shellRot13, "rot13", "<string> - Does rot13 obfuscation on <string>.");
             this.commandList[this.commandList.length] = sc;
-
             // prompt <string>
-            sc = new ShellCommand(this.shellPrompt,
-                                  "prompt",
-                                  "<string> - Sets the prompt.");
+            sc = new TSOS.ShellCommand(this.shellPrompt, "prompt", "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
-
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
-
             //
             // Display the initial prompt.
             this.putPrompt();
             document.getElementById("dateBadge").innerHTML = new Date().toLocaleDateString();
-        }
-
-        public putPrompt() {
+        };
+        Shell.prototype.putPrompt = function () {
             _StdOut.putText(this.promptStr);
-        }
-
-        public handleInput(buffer) {
+        };
+        Shell.prototype.handleInput = function (buffer) {
             _Kernel.krnTrace("Shell Command~" + buffer);
             //
             // Parse the input...
@@ -233,36 +136,40 @@ module TSOS {
             //
             // TypeScript/JavaScript may not support associative arrays in all browsers so we have to iterate over the
             // command list in attempt to find a match.  TODO: Is there a better way? Probably. Someone work it out and tell me in class.
-            var index: number = 0;
-            var found: boolean = false;
+            var index = 0;
+            var found = false;
             var fn = undefined;
             while (!found && index < this.commandList.length) {
                 if (this.commandList[index].command === cmd) {
                     found = true;
                     fn = this.commandList[index].func;
-                } else {
+                }
+                else {
                     ++index;
                 }
             }
             if (found) {
                 this.execute(fn, args);
-            } else {
+            }
+            else {
                 // It's not found, so check for curses and apologies before declaring the command invalid.
-                if (this.curses.indexOf("[" + Utils.rot13(cmd) + "]") >= 0) {     // Check for curses.
+                if (this.curses.indexOf("[" + TSOS.Utils.rot13(cmd) + "]") >= 0) {
                     this.execute(this.shellCurse);
-                } else if (this.apologies.indexOf("[" + cmd + "]") >= 0) {        // Check for apologies.
+                }
+                else if (this.apologies.indexOf("[" + cmd + "]") >= 0) {
                     this.execute(this.shellApology);
-                } else if (/^\s*$/.test(cmd)) {        // Check for blank
+                }
+                else if (/^\s*$/.test(cmd)) {
                     _StdOut.advanceLine();
                     this.putPrompt();
-                } else { // It's just a bad command. {
+                }
+                else {
                     this.execute(this.shellInvalidCommand);
                 }
             }
-        }
-
+        };
         // Note: args is an option parameter, ergo the ? which allows TypeScript to understand that.
-        public execute(fn, args?) {
+        Shell.prototype.execute = function (fn, args) {
             // We just got a command, so advance the line...
             _StdOut.advanceLine();
             // ... call the command function passing in the args with some über-cool functional programming ...
@@ -273,92 +180,80 @@ module TSOS {
             }
             // ... and finally write the prompt again.
             this.putPrompt();
-        }
-
-        public parseInput(buffer): UserCommand {
-            var retVal = new UserCommand();
-
+        };
+        Shell.prototype.parseInput = function (buffer) {
+            var retVal = new TSOS.UserCommand();
             // 1. Remove leading and trailing spaces.
-            buffer = Utils.trim(buffer);
-
+            buffer = TSOS.Utils.trim(buffer);
             // 2. Lower-case it.
             buffer = buffer.toLowerCase();
-
             // 3. Separate on spaces so we can determine the command and command-line args, if any.
             var tempList = buffer.split(" ");
-
             // 4. Take the first (zeroth) element and use that as the command.
-            var cmd = tempList.shift();  // Yes, you can do that to an array in JavaScript.  See the Queue class.
+            var cmd = tempList.shift(); // Yes, you can do that to an array in JavaScript.  See the Queue class.
             // 4.1 Remove any left-over spaces.
-            cmd = Utils.trim(cmd);
+            cmd = TSOS.Utils.trim(cmd);
             // 4.2 Record it in the return value.
             retVal.command = cmd;
-
             // 5. Now create the args array from what's left.
             for (var i in tempList) {
-                var arg = Utils.trim(tempList[i]);
+                var arg = TSOS.Utils.trim(tempList[i]);
                 if (arg != "") {
                     retVal.args[retVal.args.length] = tempList[i];
                 }
             }
             return retVal;
-        }
-
+        };
         //
         // Shell Command Functions.  Kinda not part of Shell() class exactly, but
         // called from here, so kept here to avoid violating the law of least astonishment.
         //
-        public shellInvalidCommand() {
+        Shell.prototype.shellInvalidCommand = function () {
             _StdOut.putText("Invalid Command. ");
             if (_SarcasticMode) {
                 _StdOut.putText("Unbelievable. You, [subject name here],");
                 _StdOut.advanceLine();
                 _StdOut.putText("must be the pride of [subject hometown here].");
-            } else {
+            }
+            else {
                 _StdOut.putText("Type 'help' for, well... help.");
             }
-        }
-
-        public shellCurse() {
+        };
+        Shell.prototype.shellCurse = function () {
             _StdOut.putText("Oh, so that's how it's going to be, eh? Fine.");
             _StdOut.advanceLine();
             _StdOut.putText("Bitch.");
             _SarcasticMode = true;
-        }
-
-        public shellApology() {
-           if (_SarcasticMode) {
-              _StdOut.putText("I think we can put our differences behind us.");
-              _StdOut.advanceLine();
-              _StdOut.putText("For science . . . You monster.");
-              _SarcasticMode = false;
-           } else {
-              _StdOut.putText("For what?");
-           }
-        }
-
-        public shellStatus(args){
+        };
+        Shell.prototype.shellApology = function () {
+            if (_SarcasticMode) {
+                _StdOut.putText("I think we can put our differences behind us.");
+                _StdOut.advanceLine();
+                _StdOut.putText("For science . . . You monster.");
+                _SarcasticMode = false;
+            }
+            else {
+                _StdOut.putText("For what?");
+            }
+        };
+        Shell.prototype.shellStatus = function (args) {
             document.getElementById("status").innerHTML = args.join(" ");
-        }
-
-        public shellGamify(){
+        };
+        Shell.prototype.shellGamify = function () {
             _Gamify = !_Gamify;
             _EnergyLevel = 100;
             document.getElementById("energyBar").style.width = 100 + "%";
             document.getElementById("energyDiv").hidden = !_Gamify;
-
             var ads = document.getElementsByClassName("gamify-img");
-            for(var i = 0; i < ads.length; i++) {
-                (<HTMLElement>ads[i]).hidden = !_Gamify;
+            for (var i = 0; i < ads.length; i++) {
+                ads[i].hidden = !_Gamify;
             }
-        }
-
-        public shellProcesses() {
+        };
+        Shell.prototype.shellProcesses = function () {
             _StdOut.putText("PID  Process");
             _StdOut.advanceLine();
             _StdOut.putText("--  ------");
             _StdOut.advanceLine();
-
             for (var i = 0; i < _ProcessManager.residentList.length; i++) {
                 var process = _ProcessManager.residentList[i];
                 if (process.processState === ProcessState.RUNNING ||
@@ -367,28 +262,25 @@ module TSOS {
                     _StdOut.advanceLine();
                 }
             }
-        }
-
-        public shellRun(pid){
-            if(pid === undefined) {
+        };
+        Shell.prototype.shellRun = function (pid) {
+            if (pid === undefined) {
                 _StdOut.putText("Missing argument. run <PID>.");
-            } else {
+            }
+            else {
                 _ProcessManager.run(parseInt(pid));
             }
-        }
-
-        public shellClearMem() {
+        };
+        Shell.prototype.shellClearMem = function () {
             MemoryManager.clearAll();
             _StdOut.putText("Memory successfully cleared.");
-        }
-
-        public shellGetSchedule() {
+        };
+        Shell.prototype.shellGetSchedule = function () {
             _StdOut.putText("Current Process Schedule: " + _ProcessManager.currentSchedulingMethod);
-        }
-
-        public shellSetSchedule(args: Array<string>) {
+        };
+        Shell.prototype.shellSetSchedule = function (args) {
             var schedule = args[0];
-            switch(schedule) {
+            switch (schedule) {
                 case "rr":
                     _ProcessManager.currentSchedulingMethod = "rr";
                     _StdOut.putText("Switching CPU scheduling algorithm to Round Robin.");
@@ -404,129 +296,113 @@ module TSOS {
                 default:
                     _StdOut.putText("Error. Priority Algorithm '" + schedule + "' does not exist. Try 'rr', 'fcfs', or 'priority' instead.");
             }
-        }
-
-        public shellRunAll() {
+        };
+        Shell.prototype.shellRunAll = function () {
             _ProcessManager.runAll();
-        }
-
-        public shellQuantum(arg: string){
+        };
+        Shell.prototype.shellQuantum = function (arg) {
             var quantum = parseInt(arg);
-
             if (quantum > 0) {
                 _Quantum = quantum;
                 _StdOut.putText("Quantum successfully set to " + quantum + ".");
-            } else {
+            }
+            else {
                 _StdOut.putText("Quantum could not be set to " + quantum + ".");
             }
-        }
-
-        public shellLoad() {
-            var programInput = (<HTMLTextAreaElement>document.getElementById("taProgramInput")).value;
-            programInput = programInput.replace(/(\r\n|\n|\r)/gm,"");
-
+        };
+        Shell.prototype.shellLoad = function () {
+            var programInput = document.getElementById("taProgramInput").value;
+            programInput = programInput.replace(/(\r\n|\n|\r)/gm, "");
             if (programInput.length === 0) {
                 _StdOut.putText("Error. The program input field is empty.");
-            } else if(/^[a-fA-F0-9 ]*$/.test(programInput)) {
+            }
+            else if (/^[a-fA-F0-9 ]*$/.test(programInput)) {
                 var pid = _ProcessManager.load(programInput);
-
                 if (pid === -1) {
                     _StdOut.putText("Out of Memory. Could not load program.");
-                } else {
+                }
+                else {
                     _StdOut.putText("Program successfully loaded. PID: " + pid);
                 }
-            } else {
+            }
+            else {
                 _StdOut.putText("Error. Text input must consist only of hex or spaces.");
             }
-        }
-
-        public shellKill(pid: string){
+        };
+        Shell.prototype.shellKill = function (pid) {
             var success = _ProcessManager.kill(parseInt(pid));
             if (success) {
                 _StdOut.putText("Pid " + pid + " successfully removed.");
-            } else {
+            }
+            else {
                 _StdOut.putText("Error.");
             }
-        }
-
-        public shellKillAll() {
+        };
+        Shell.prototype.shellKillAll = function () {
             _ProcessManager.killAll();
-        }
-
-        public shellCreateFile(filename: string) {
+        };
+        Shell.prototype.shellCreateFile = function (filename) {
             var params = ["create", filename];
             _KernelInterruptQueue.enqueue(new Interrupt(DISK_OPERATION_IRQ, params));
-        }
-
-        public shellWriteFile(args: Array<string>) {
+        };
+        Shell.prototype.shellWriteFile = function (args) {
             var filename = args[0];
             var data = args.splice(1).join(" ");
             if (/^"[^"]+"$/.test(data)) {
                 var params = ["write", filename, data.slice(1, -1)];
                 _KernelInterruptQueue.enqueue(new Interrupt(DISK_OPERATION_IRQ, params));
-            } else {
+            }
+            else {
                 _StdOut.putText("File contents must be wrapped in quotes.");
             }
-        }
-
-        public shellReadFile(filename: string) {
+        };
+        Shell.prototype.shellReadFile = function (filename) {
             var params = ["read", filename];
             _KernelInterruptQueue.enqueue(new Interrupt(DISK_OPERATION_IRQ, params));
-        }
-
-        public shellDeleteFile(filename: string) {
+        };
+        Shell.prototype.shellDeleteFile = function (filename) {
             var params = ["delete", filename];
             _KernelInterruptQueue.enqueue(new Interrupt(DISK_OPERATION_IRQ, params));
-        }
-
-        public shellFormat() {
+        };
+        Shell.prototype.shellFormat = function () {
             var params = ["format"];
             _KernelInterruptQueue.enqueue(new Interrupt(DISK_OPERATION_IRQ, params));
-        }
-
-        public shellLs() {
+        };
+        Shell.prototype.shellLs = function () {
             var params = ["ls"];
             _KernelInterruptQueue.enqueue(new Interrupt(DISK_OPERATION_IRQ, params));
-        }
-
-        public shellBSOD(args) {
+        };
+        Shell.prototype.shellBSOD = function (args) {
             // Display BSOD
             _Kernel.krnTrapError("testing...");
-        }
-
-        public shellVer(args) {
+        };
+        Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
-        }
-
-        public shellHelp(args) {
+        };
+        Shell.prototype.shellHelp = function (args) {
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
                 _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
             }
-        }
-
-        public shellDate(args) {
+        };
+        Shell.prototype.shellDate = function (args) {
             _StdOut.putText(new Date().toLocaleDateString());
-        }
-
-        public shellWhereami(args){
+        };
+        Shell.prototype.shellWhereami = function (args) {
             _StdOut.putText("Right where you need to be.");
-        }
-
-        public shellShutdown(args) {
-             _StdOut.putText("Shutting down...");
-             // Call Kernel shutdown routine.
+        };
+        Shell.prototype.shellShutdown = function (args) {
+            _StdOut.putText("Shutting down...");
+            // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
             // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
-        }
-
-        public shellCls(args) {
+        };
+        Shell.prototype.shellCls = function (args) {
             _StdOut.clearScreen();
             _StdOut.resetXY();
-        }
-
-        public shellMan(args) {
+        };
+        Shell.prototype.shellMan = function (args) {
             if (args.length > 0) {
                 var topic = args[0];
                 switch (topic) {
@@ -537,19 +413,20 @@ module TSOS {
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
-            } else {
+            }
+            else {
                 _StdOut.putText("Usage: man <topic>  Please supply a topic.");
             }
-        }
-
-        public shellTrace(args) {
+        };
+        Shell.prototype.shellTrace = function (args) {
             if (args.length > 0) {
                 var setting = args[0];
                 switch (setting) {
                     case "on":
                         if (_Trace && _SarcasticMode) {
                             _StdOut.putText("Trace is already on, doofus.");
-                        } else {
+                        }
+                        else {
                             _Trace = true;
                             _StdOut.putText("Trace ON");
                         }
@@ -561,27 +438,30 @@ module TSOS {
                     default:
                         _StdOut.putText("Invalid arguement.  Usage: trace <on | off>.");
                 }
-            } else {
+            }
+            else {
                 _StdOut.putText("Usage: trace <on | off>");
             }
-        }
-
-        public shellRot13(args) {
+        };
+        Shell.prototype.shellRot13 = function (args) {
             if (args.length > 0) {
                 // Requires Utils.ts for rot13() function.
-                _StdOut.putText(args.join(' ') + " = '" + Utils.rot13(args.join(' ')) +"'");
-            } else {
+                _StdOut.putText(args.join(' ') + " = '" + TSOS.Utils.rot13(args.join(' ')) + "'");
+            }
+            else {
                 _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
             }
-        }
-
-        public shellPrompt(args) {
+        };
+        Shell.prototype.shellPrompt = function (args) {
             if (args.length > 0) {
                 _OsShell.promptStr = args[0];
-            } else {
+            }
+            else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
-        }
-
-    }
-}
+        };
+        return Shell;
+    })();
+    TSOS.Shell = Shell;
+})(TSOS || (TSOS = {}));
+//# sourceMappingURL=shell.js.map

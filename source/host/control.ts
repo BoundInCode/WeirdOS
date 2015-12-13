@@ -96,6 +96,9 @@ module TSOS {
             _Memory = new MainMemory(MEMORY_SIZE);
             _Memory.init();
 
+            _HDD = new HDD(4, 8, 8);
+            _HDD.init();
+
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             // .. and call the OS Kernel Bootstrap routine.

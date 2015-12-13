@@ -1,6 +1,5 @@
 ///<reference path="../globals.ts" />
 ///<reference path="queue.ts" />
-
 /* ------------
      Kernel.ts
 
@@ -12,67 +11,52 @@
      This code references page numbers in the text book:
      Operating System Concepts 8th edition by Silberschatz, Galvin, and Gagne.  ISBN 978-0-470-12872-5
      ------------ */
-
-module TSOS {
-
-    export class Kernel {
+var TSOS;
+(function (TSOS) {
+    var Kernel = (function () {
+        function Kernel() {
+        }
         //
         // OS Startup and Shutdown Routines
         //
-        public krnBootstrap() {      // Page 8. {
-            Control.hostLog("bootstrap", "host");  // Use hostLog because we ALWAYS want this, even if _Trace is off.
-
+        Kernel.prototype.krnBootstrap = function () {
+            Control.hostLog("bootstrap", "host"); // Use hostLog because we ALWAYS want this, even if _Trace is off.
             // Initialize our global queues.
-            _KernelInterruptQueue = new Queue();  // A (currently) non-priority queue for interrupt requests (IRQs).
-            _KernelBuffers = new Array();         // Buffers... for the kernel.
-            _KernelInputQueue = new Queue();      // Where device input lands before being processed out somewhere.
-
+            _KernelInterruptQueue = new TSOS.Queue(); // A (currently) non-priority queue for interrupt requests (IRQs).
+            _KernelBuffers = new Array(); // Buffers... for the kernel.
+            _KernelInputQueue = new TSOS.Queue(); // Where device input lands before being processed out somewhere.
             // Initialize the console.
-            _Console = new Console();          // The command line interface / console I/O device.
+            _Console = new Console(); // The command line interface / console I/O device.
             _Console.init();
-
             // Initialize standard input and output to the _Console.
-            _StdIn  = _Console;
+            _StdIn = _Console;
             _StdOut = _Console;
-
             // Initialize Memory and Process Managers
             _ProcessManager = new ProcessManager();
             _ProcessManager.init();
-
             _MemoryManager = new MemoryManager();
             _MemoryManager.init();
-
             // Load the Keyboard Device Driver
             this.krnTrace("Loading the keyboard device driver.");
-            _krnKeyboardDriver = new DeviceDriverKeyboard();     // Construct it.
-            _krnKeyboardDriver.driverEntry();                    // Call the driverEntry() initialization routine.
+            _krnKeyboardDriver = new DeviceDriverKeyboard(); // Construct it.
+            _krnKeyboardDriver.driverEntry(); // Call the driverEntry() initialization routine.
             this.krnTrace(_krnKeyboardDriver.status);
-
-            this.krnTrace("Loading the filesystem device driver.");
-            _krnFsDriver = new DeviceDriverFileSystem();
-            _krnFsDriver.driverEntry();
-            this.krnTrace(_krnFsDriver.status);
-
             //
             // ... more?
             //
-
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
             this.krnTrace("Enabling the interrupts.");
             this.krnEnableInterrupts();
-
             // Launch the shell.
             this.krnTrace("Creating and Launching the shell.");
             _OsShell = new Shell();
             _OsShell.init();
-
             // Finally, initiate student testing protocol.
             if (_GLaDOS) {
                 _GLaDOS.afterStartup();
             }
-        }
-
-        public krnShutdown() {
+        };
+        Kernel.prototype.krnShutdown = function () {
             this.krnTrace("begin shutdown OS");
             // TODO: Check for running processes.  If there are some, alert and stop. Else...
             // ... Disable the Interrupts.
@@ -83,86 +67,79 @@ module TSOS {
             // More?
             //
             this.krnTrace("end shutdown OS");
-        }
-
-
-        public krnOnCPUClockPulse() {
+        };
+        Kernel.prototype.krnOnCPUClockPulse = function () {
             /* This gets called from the host hardware simulation every time there is a hardware clock pulse.
                This is NOT the same as a TIMER, which causes an interrupt and is handled like other interrupts.
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
                that it has to look for interrupts and process them if it finds any.                           */
-
             // Check for an interrupt, are any. Page 560
             if (_KernelInterruptQueue.getSize() > 0) {
                 // Process the first interrupt on the interrupt queue.
                 // TODO: Implement a priority queue based on the IRQ number/id to enforce interrupt priority.
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
-            } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed. {
+            }
+            else if (_CPU.isExecuting) {
                 _ProcessManager.cycle++;
                 _CPU.cycle();
-            } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
+            }
+            else {
                 this.krnTrace("Idle");
             }
-
             _ProcessManager.schedule();
-        }
-
-
+        };
         //
         // Interrupt Handling
         //
-        public krnEnableInterrupts() {
+        Kernel.prototype.krnEnableInterrupts = function () {
             // Keyboard
             Devices.hostEnableKeyboardInterrupt();
             // Put more here.
-        }
-
-        public krnDisableInterrupts() {
+        };
+        Kernel.prototype.krnDisableInterrupts = function () {
             // Keyboard
             Devices.hostDisableKeyboardInterrupt();
             // Put more here.
-        }
-
-        public krnHandleSysCall(params) {
+        };
+        Kernel.prototype.krnHandleSysCall = function (params) {
             var x = params[0];
             var y = params[1];
-
-            if(x === 1) {
+            if (x === 1) {
                 _StdOut.putText(y.toString());
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
-            } else if (x === 2) {
+            }
+            else if (x === 2) {
                 var address = y;
                 var stringChar = MemoryManager.read(address, _CPU.CurrentPCB);
-                while(stringChar !== "00") {
+                while (stringChar !== "00") {
                     _StdOut.putText(String.fromCharCode(parseInt(stringChar, 16)));
                     address++;
                     stringChar = MemoryManager.read(address, _CPU.CurrentPCB);
                 }
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
-            } else {
-                this.krnTrapError("Error. X register must be either 1 or 2.")
+            }
+            else {
+                this.krnTrapError("Error. X register must be either 1 or 2.");
                 _CPU.isExecuting = false;
             }
-        }
-
-        public krnInterruptHandler(irq, params) {
+        };
+        Kernel.prototype.krnInterruptHandler = function (irq, params) {
             // This is the Interrupt Handler Routine.  See pages 8 and 560.
             // Trace our entrance here so we can compute Interrupt Latency by analyzing the log file later on. Page 766.
             this.krnTrace("Handling IRQ~" + irq);
-
             // Invoke the requested Interrupt Service Routine via Switch/Case rather than an Interrupt Vector.
             // TODO: Consider using an Interrupt Vector in the future.
             // Note: There is no need to "dismiss" or acknowledge the interrupts in our design here.
             //       Maybe the hardware simulation will grow to support/require that in the future.
             switch (irq) {
                 case TIMER_IRQ:
-                    this.krnTimerISR();              // Kernel built-in routine for timers (not the clock).
+                    this.krnTimerISR(); // Kernel built-in routine for timers (not the clock).
                     break;
                 case KEYBOARD_IRQ:
-                    _krnKeyboardDriver.isr(params);   // Kernel mode device driver
+                    _krnKeyboardDriver.isr(params); // Kernel mode device driver
                     _StdIn.handleInput();
                     break;
                 case SYSCALL_IRQ:
@@ -171,15 +148,11 @@ module TSOS {
                 case CONTEXT_SWITCH_IRQ:
                     this.krnContextSwitch(params);
                     break;
-                case DISK_OPERATION_IRQ:
-                    _krnFsDriver.isr(params);
-                    break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
-        }
-
-        public krnContextSwitch(params) {
+        };
+        Kernel.prototype.krnContextSwitch = function (params) {
             this.krnTrace("Context Switch. Swapping out currently running process.");
             if (_CPU.CurrentPCB != null && _CPU.CurrentPCB.processState !== ProcessState.TERMINATED) {
                 _CPU.CurrentPCB.processState = ProcessState.READY;
@@ -190,14 +163,11 @@ module TSOS {
             if (process != null) {
                 _CPU.start(process);
             }
-        }
-
-        public krnTimerISR() {
+        };
+        Kernel.prototype.krnTimerISR = function () {
             // The built-in TIMER (not clock) Interrupt Service Routine (as opposed to an ISR coming from a device driver). {
             // Check multiprogramming parameters and enforce quanta here. Call the scheduler / context switch here if necessary.
-
-        }
-
+        };
         //
         // System Calls... that generate software interrupts via tha Application Programming Interface library routines.
         //
@@ -212,14 +182,12 @@ module TSOS {
         // - ReadFile
         // - WriteFile
         // - CloseFile
-
-
         //
         // OS Utility Routines
         //
-        public krnTrace(msg: string) {
-             // Check globals to see if trace is set ON.  If so, then (maybe) log the message.
-             if (_Trace) {
+        Kernel.prototype.krnTrace = function (msg) {
+            // Check globals to see if trace is set ON.  If so, then (maybe) log the message.
+            if (_Trace) {
                 if (msg === "Idle") {
                     // We can't log every idle clock pulse because it would lag the browser very quickly.
                     if (_OSclock % 10 == 0) {
@@ -227,26 +195,26 @@ module TSOS {
                         // idea of the tick rate and adjust this line accordingly.
                         Control.hostLog(msg, "OS");
                     }
-                } else {
+                }
+                else {
                     Control.hostLog(msg, "OS");
                 }
-             }
-        }
-
-        public krnTrapError(msg) {
+            }
+        };
+        Kernel.prototype.krnTrapError = function (msg) {
             Control.hostLog("OS ERROR - TRAP: " + msg);
-
             // Reset Canvas size to 500x500
             _Canvas.height = 500;
             _Canvas.width = 500;
-
             var bsodImg = new Image();
             bsodImg.onload = function () {
                 _Canvas.getContext('2d').drawImage(bsodImg, 0, 0, 500, 500);
-            }
+            };
             bsodImg.src = "distrib/images/bsod.png";
-
             this.krnShutdown();
-        }
-    }
-}
+        };
+        return Kernel;
+    })();
+    TSOS.Kernel = Kernel;
+})(TSOS || (TSOS = {}));
+//# sourceMappingURL=kernel.js.map

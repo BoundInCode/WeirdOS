@@ -19,7 +19,13 @@ module TSOS {
         public pc: number;
         public acc: number;
 
+        // Stats
+        public startTime: number;
+        public endTime: number;
+        public waitTime: number;
+
         public processState: TSOS.ProcessState;
+        public onDisk: boolean;
 
         constructor(pid: number, base: number, limit: number) {
             this.pid = pid;
@@ -31,6 +37,15 @@ module TSOS {
             this.pc = 0;
             this.acc = 0;
             this.processState = TSOS.ProcessState.NEW;
+
+            this.startTime = _OSclock;
+            this.endTime = _OSclock;
+            this.waitTime = 0;
+            this.onDisk = false;
+        }
+
+        public getTurnAroundTime() {
+            return this.endTime - this.startTime;
         }
 
     }
