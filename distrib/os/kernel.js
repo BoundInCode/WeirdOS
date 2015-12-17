@@ -156,7 +156,6 @@ var TSOS;
                     _krnFsDriver.isr(params);
                     break;
                 case PAGE_FAULT:
-                    console.log("switch statement");
                     this.krnPageFault(params);
                     break;
                 default:
@@ -168,15 +167,14 @@ var TSOS;
             var pid = params[0];
             // STEP 1: Save MRU process
             var pcb = _ProcessManager.mruProcess;
-            console.log(pcb);
             var program = "";
-            for (var i = 0; i < 255; i++) {
+            for (var i = 0; i < 256; i++) {
                 program += TSOS.MemoryManager.read(i, pcb);
             }
-            var tsb = _krnFsDriver.writeData(program, true);
-            pcb.tsb = tsb;
             console.log(program);
-            console.log(localStorage);
+            var tsb = _krnFsDriver.writeHex(program);
+            pcb.onDisk = true;
+            pcb.tsb = tsb;
             // STEP 2: Load Process from memory
             var newPcb = null;
             var resList = _ProcessManager.residentList;
@@ -186,13 +184,16 @@ var TSOS;
                     break;
                 }
             }
-            console.log(newPcb);
             var newProgram = _krnFsDriver.readData(newPcb.tsb);
-            _Memory.write(newProgram, newPcb.base);
+            newPcb.base = pcb.base;
+            newPcb.limit = pcb.limit;
             newPcb.onDisk = false;
-            newPcb.tsb = null;
+            TSOS.MemoryManager.write(newProgram, 0, newPcb);
             // STEP 3: Delete old process from memory
             _krnFsDriver.deleteBlock(newPcb.tsb);
+            newPcb.tsb = null;
+            // STEP 4: Start CPU
+            _CPU.start(newPcb);
         };
         Kernel.prototype.krnContextSwitch = function (params) {
             this.krnTrace("Context Switch. Swapping out currently running process.");
@@ -204,9 +205,7 @@ var TSOS;
             var process = _ProcessManager.nextProcess();
             if (process != null) {
                 if (process.onDisk) {
-                    console.log("Page fault");
-                    var params2 = [process.pid];
-                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(PAGE_FAULT, params2));
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(PAGE_FAULT, [process.pid]));
                 }
                 else {
                     _CPU.start(process);

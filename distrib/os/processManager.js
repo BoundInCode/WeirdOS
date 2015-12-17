@@ -35,10 +35,11 @@ var TSOS;
             this.addPCB(processControlBlock);
             // Out of Memory. Store on disk
             if (base === -1) {
-                var tsb = _krnFsDriver.writeData(program, true);
+                var tsb = _krnFsDriver.writeHex(program);
                 processControlBlock.onDisk = true;
                 processControlBlock.tsb = tsb;
             }
+            console.log(localStorage);
             this.currentPID++;
             return processControlBlock.pid;
         };

@@ -19,7 +19,7 @@ module TSOS {
         private UNAVAILABLE = "1";
         private HEADER_SIZE = 4;
         private ZERO_BLOCK = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-        private UNAVAILABLE_BLOCK = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        private UNAVAILABLE_BLOCK = "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 
         constructor() {
             // Override the base method pointers.
@@ -32,7 +32,6 @@ module TSOS {
         }
 
         public krnHandleDiskOperation(params) {
-            console.log(params);
             var action = params[0];
             switch(action) {
                 case "create":
@@ -80,16 +79,30 @@ module TSOS {
             return s;
         }
 
-        public writeData(program: string, isHex=false): TSB {
-            _Kernel.krnTrace("Saving program to disk");
+        public writeHex(program: string): TSB {
+            _Kernel.krnTrace("Writing program to disk");
             var block = this.nextAvailableBlock();
             var nextBlock = new TSB(0,0,0);
             var str = program;
-            if (program.length > 60) {
-                nextBlock = this.writeData(program.substring(60), isHex);
-                str = program.substring(0,60);
+            if (program.length > 124) {
+                console.log("Program.length = " + program.length);
+                nextBlock = this.writeHex(program.substring(124));
+                str = program.substring(0,124);
             }
-            if (!isHex) { str = this.stringToHex(str); }
+            _HDD.write(block, this.UNAVAILABLE + nextBlock.toString() + str);
+            return block;
+        }
+
+        public writeFileContents(fileContents: string): TSB {
+            _Kernel.krnTrace("Saving data to disk");
+            var block = this.nextAvailableBlock();
+            var nextBlock = new TSB(0,0,0);
+            var str = fileContents;
+            if (fileContents.length > 60) {
+                nextBlock = this.writeFileContents(str.substring(60));
+                str = str.substring(0,60);
+            }
+            str = this.stringToHex(str);
             _HDD.write(block, this.UNAVAILABLE + nextBlock + str);
             return block;
         }
@@ -102,7 +115,7 @@ module TSOS {
                         var data = _HDD.read(tsb);
                         if (this.isAvailable(data)) {
                             var block = new TSB(i, j, k)
-                            _HDD.write(block, this.UNAVAILABLE_BLOCK);
+                            _HDD.write(block, this.UNAVAILABLE_BLOCK); // reserved
                             return block;
                         }
                     }
@@ -174,7 +187,7 @@ module TSOS {
             }
 
             if (data.length > 60) {
-                var nextBlock = this.writeData(data.substring(60));
+                var nextBlock = this.writeFileContents(data.substring(60));
                 var str = this.stringToHex(data.substring(60));
                 _HDD.write(tsb,this.UNAVAILABLE + nextBlock + str);
             } else {
@@ -191,10 +204,12 @@ module TSOS {
             var program = "";
             var data = _HDD.read(tsb);
             var nextBlock = this.getTSB(data);
-            while (nextBlock.track != 0 || nextBlock.sector != 0 || nextBlock.block != 0) {
+            if (nextBlock.track != 0 || nextBlock.sector != 0 || nextBlock.block != 0) {
                 program += data.substring(4);
                 data = _HDD.read(nextBlock);
                 nextBlock = this.getTSB(data);
+                console.log("data: " + data);
+                console.log("nextBlock: " + nextBlock);
             }
             program += data.substring(4);
             return program;
@@ -202,7 +217,6 @@ module TSOS {
 
         public readFile(filename): void {
             console.log(localStorage);
-            console.log(this.files);
             if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
@@ -212,7 +226,6 @@ module TSOS {
 
             var data = _HDD.read(tsb);
             var nextBlock = this.getTSB(data);
-            console.log(nextBlock);
             while (nextBlock.track != 0 || nextBlock.sector != 0 || nextBlock.block != 0) {
                 _StdOut.putText(this.hexToString(data.substring(4)));
                 data = _HDD.read(nextBlock);
