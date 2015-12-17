@@ -423,13 +423,12 @@ module TSOS {
 
         public shellLoad() {
             var programInput = (<HTMLTextAreaElement>document.getElementById("taProgramInput")).value;
-            programInput = programInput.replace(/(\r\n|\n|\r)/gm,"");
+            programInput = programInput.replace(/(\s|\r\n|\n|\r)/gm,"");
 
             if (programInput.length === 0) {
                 _StdOut.putText("Error. The program input field is empty.");
             } else if(/^[a-fA-F0-9 ]*$/.test(programInput)) {
                 var pid = _ProcessManager.load(programInput);
-
                 if (pid === -1) {
                     _StdOut.putText("Out of Memory. Could not load program.");
                 } else {
@@ -453,7 +452,8 @@ module TSOS {
             _ProcessManager.killAll();
         }
 
-        public shellCreateFile(filename: string) {
+        public shellCreateFile(args: Array<string>) {
+            var filename = args[0];
             var params = ["create", filename];
             _KernelInterruptQueue.enqueue(new Interrupt(DISK_OPERATION_IRQ, params));
         }
@@ -469,12 +469,14 @@ module TSOS {
             }
         }
 
-        public shellReadFile(filename: string) {
+        public shellReadFile(args: Array<string>) {
+            var filename = args[0];
             var params = ["read", filename];
             _KernelInterruptQueue.enqueue(new Interrupt(DISK_OPERATION_IRQ, params));
         }
 
-        public shellDeleteFile(filename: string) {
+        public shellDeleteFile(args: Array<string>) {
+            var filename = args[0];
             var params = ["delete", filename];
             _KernelInterruptQueue.enqueue(new Interrupt(DISK_OPERATION_IRQ, params));
         }

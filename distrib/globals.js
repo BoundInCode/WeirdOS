@@ -20,6 +20,7 @@ var KEYBOARD_IRQ = 1;
 var SYSCALL_IRQ = 2;
 var CONTEXT_SWITCH_IRQ = 3;
 var DISK_OPERATION_IRQ = 4;
+var PAGE_FAULT = 5;
 //
 // Global Variables
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.

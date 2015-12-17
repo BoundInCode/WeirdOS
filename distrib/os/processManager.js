@@ -23,12 +23,11 @@ var TSOS;
             this.cycle = 0;
             this.residentListDiv = document.getElementById("residentList");
             this.currentSchedulingMethod = "rr";
+            this.mruProcess = null;
         }
         ProcessManager.prototype.init = function () { };
         ProcessManager.prototype.load = function (program) {
             var programText = program.replace(/\s/g, '');
-            // Clear old program
-            //MemoryManager.clear(0, 255);
             // Load new program
             var base = TSOS.MemoryManager.allocate(programText);
             var limit = base + 256; // programText.length;
@@ -36,8 +35,9 @@ var TSOS;
             this.addPCB(processControlBlock);
             // Out of Memory. Store on disk
             if (base === -1) {
-                _krnFsDriver.allocate(program);
+                var tsb = _krnFsDriver.writeData(program, true);
                 processControlBlock.onDisk = true;
+                processControlBlock.tsb = tsb;
             }
             this.currentPID++;
             return processControlBlock.pid;
@@ -141,12 +141,12 @@ var TSOS;
         ProcessManager.prototype.nextProcess = function () {
             var retVal = null;
             if (this.currentSchedulingMethod === "priority") {
+                this.readyQueue.q.sort(function (a, b) {
+                    return a.priority - b.priority;
+                });
             }
-            else {
-                // rr or fcfs
-                if (this.readyQueue.getSize() > 0) {
-                    retVal = this.readyQueue.dequeue();
-                }
+            if (this.readyQueue.getSize() > 0) {
+                retVal = this.readyQueue.dequeue();
             }
             return retVal;
         };
@@ -175,7 +175,12 @@ var TSOS;
             }
         };
         ProcessManager.prototype.priority = function () {
-            // TODO: Implement
+            if (!_CPU.isExecuting) {
+                if (!this.readyQueue.isEmpty()) {
+                    _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_SWITCH_IRQ, null));
+                    this.cycle = 0;
+                }
+            }
         };
         ProcessManager.prototype.schedule = function () {
             // Increment Wait times

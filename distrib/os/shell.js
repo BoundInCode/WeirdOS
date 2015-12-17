@@ -312,7 +312,7 @@ var TSOS;
         };
         Shell.prototype.shellLoad = function () {
             var programInput = document.getElementById("taProgramInput").value;
-            programInput = programInput.replace(/(\r\n|\n|\r)/gm, "");
+            programInput = programInput.replace(/(\s|\r\n|\n|\r)/gm, "");
             if (programInput.length === 0) {
                 _StdOut.putText("Error. The program input field is empty.");
             }
@@ -341,7 +341,8 @@ var TSOS;
         Shell.prototype.shellKillAll = function () {
             _ProcessManager.killAll();
         };
-        Shell.prototype.shellCreateFile = function (filename) {
+        Shell.prototype.shellCreateFile = function (args) {
+            var filename = args[0];
             var params = ["create", filename];
             _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_OPERATION_IRQ, params));
         };
@@ -356,11 +357,13 @@ var TSOS;
                 _StdOut.putText("File contents must be wrapped in quotes.");
             }
         };
-        Shell.prototype.shellReadFile = function (filename) {
+        Shell.prototype.shellReadFile = function (args) {
+            var filename = args[0];
             var params = ["read", filename];
             _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_OPERATION_IRQ, params));
         };
-        Shell.prototype.shellDeleteFile = function (filename) {
+        Shell.prototype.shellDeleteFile = function (args) {
+            var filename = args[0];
             var params = ["delete", filename];
             _KernelInterruptQueue.enqueue(new TSOS.Interrupt(DISK_OPERATION_IRQ, params));
         };

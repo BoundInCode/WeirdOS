@@ -89,7 +89,6 @@ module TSOS {
             this.symTD.innerHTML = "AD";
             this.PC++;
 
-
             var arg = MemoryManager.read(this.PC, this.CurrentPCB);
             var address = parseInt(arg, 16);
             this.argTD.innerHTML = arg;

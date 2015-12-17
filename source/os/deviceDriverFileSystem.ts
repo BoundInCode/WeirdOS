@@ -15,9 +15,11 @@ module TSOS {
     export class DeviceDriverFileSystem extends DeviceDriver {
 
         private files: Object = new Object();
-        private AVAILABLE = "0";
+        private AVAILABLE   = "0";
         private UNAVAILABLE = "1";
-        private ZERO_BLOCK = "0000000000000000000000000000000000000000000000000000000000000000"
+        private HEADER_SIZE = 4;
+        private ZERO_BLOCK = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        private UNAVAILABLE_BLOCK = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 
         constructor() {
             // Override the base method pointers.
@@ -30,8 +32,8 @@ module TSOS {
         }
 
         public krnHandleDiskOperation(params) {
+            console.log(params);
             var action = params[0];
-
             switch(action) {
                 case "create":
                     var filename = params[1];
@@ -59,25 +61,54 @@ module TSOS {
             }
         }
 
-        public writeProgram(program: string): void {
-            _Kernel.krnTrace("Saving program to disk");
+        private stringToHex(str: string): string {
+            var hex = "";
+            for (var i = 0; i < str.length; i++) {
+                var c = str.charCodeAt(i);
+                hex += c.toString(16);
+            }
+            return hex;
+        }
 
-            // get next available block
-            // Note: track 0 is reserved for filenames
+        private hexToString(str: string): string {
+            var arr = str.match(/.{2}/g);
+            var s = '';
+            for (var i = 0; i < arr.length; i++) {
+                var c = String.fromCharCode(parseInt(arr[i], 16) );
+                s += c;
+            }
+            return s;
+        }
+
+        public writeData(program: string, isHex=false): TSB {
+            _Kernel.krnTrace("Saving program to disk");
+            var block = this.nextAvailableBlock();
+            var nextBlock = new TSB(0,0,0);
+            var str = program;
+            if (program.length > 60) {
+                nextBlock = this.writeData(program.substring(60), isHex);
+                str = program.substring(0,60);
+            }
+            if (!isHex) { str = this.stringToHex(str); }
+            _HDD.write(block, this.UNAVAILABLE + nextBlock + str);
+            return block;
+        }
+
+        public nextAvailableBlock(): TSB {
             for (var i = 1; i < _HDD.tracks; i++) {
                 for (var j = 0; j < _HDD.sectors; j++) {
                     for (var k = 0; k < _HDD.blocks; k++) {
-                        var data = _HDD.read(i, j, k)
+                        var tsb = new TSB(i, j, k);
+                        var data = _HDD.read(tsb);
                         if (this.isAvailable(data)) {
-                            _HDD.write(this.block(program, i, j, k), i, j, k);
-                            return;
+                            var block = new TSB(i, j, k)
+                            _HDD.write(block, this.UNAVAILABLE_BLOCK);
+                            return block;
                         }
                     }
                 }
             }
-        }
-
-        public nextAvailableBlock(): void {
+            return null;
         }
 
         public createFile(filename: string): void {
@@ -94,10 +125,12 @@ module TSOS {
             // get next available block
             for (var i = 0; i < _HDD.sectors; i++) {
                 for (var j = 0; j < _HDD.blocks; j++) {
-                    var data = _HDD.read(0, i, j)
+                    var tsb = new TSB(0, i, j);
+                    var data = _HDD.read(tsb)
                     if (this.isAvailable(data)) {
-                        this.files[filename] = [0, i, j];
-                        _HDD.write(this.block(filename, 0, i, j), 0, i, j);
+                        this.files[filename] = tsb;
+                        var str =  this.stringToHex(filename);
+                        _HDD.write(tsb, this.UNAVAILABLE + "000" + str);
                         _StdOut.putText("Created file: '" + filename + "'");
                         _StdOut.advanceLine();
                         _OsShell.putPrompt();
@@ -110,13 +143,20 @@ module TSOS {
             _OsShell.putPrompt();
         }
 
-        private block(filename: string, t: number, s: number, b: number): string {
-            return this.UNAVAILABLE + t + s + b;
-        }
-
         private isAvailable(data: string): boolean {
             if (data === null) { return false; }
             return data.substring(0, 1) === this.AVAILABLE;
+        }
+
+        private getTSB(block: String): TSB {
+            var t = parseInt(block.charAt(1));
+            var s = parseInt(block.charAt(2));
+            var b = parseInt(block.charAt(3));
+            return new TSB(t,s,b);
+        }
+
+        public deleteBlock(tsb: TSB): void {
+            _HDD.write(tsb, this.ZERO_BLOCK);
         }
 
         public writeFile(filename, data): void {
@@ -124,25 +164,61 @@ module TSOS {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
             }
+            this.deleteFile(filename);
             var filenameTsb = this.files[filename];
-            var tsb = _HDD.read(parseInt(filenameTsb[0]), parseInt(filenameTsb[1]), parseInt(filenameTsb[2]));
-            _HDD.write(data, parseInt(tsb[0]), parseInt(tsb[1]), parseInt(tsb[2]));
+            var tsb = this.getTSB(_HDD.read(filenameTsb));
+            if (tsb.track == 0 && tsb.sector == 0 && tsb.block == 0) {
+                tsb = this.nextAvailableBlock();
+                var str =  this.stringToHex(filename);
+                _HDD.write(filenameTsb, this.UNAVAILABLE + tsb + str);
+            }
 
+            if (data.length > 60) {
+                var nextBlock = this.writeData(data.substring(60));
+                var str = this.stringToHex(data.substring(60));
+                _HDD.write(tsb,this.UNAVAILABLE + nextBlock + str);
+            } else {
+                var str = this.UNAVAILABLE + "000" + this.stringToHex(data);
+                _HDD.write(tsb, str);
+            }
             _StdOut.putText("File '" + filename + "' written.");
             _StdOut.advanceLine();
             _OsShell.putPrompt();
             _Kernel.krnTrace("[WRITE] Writing file: " + filename);
         }
 
+        public readData(tsb: TSB): string {
+            var program = "";
+            var data = _HDD.read(tsb);
+            var nextBlock = this.getTSB(data);
+            while (nextBlock.track != 0 || nextBlock.sector != 0 || nextBlock.block != 0) {
+                program += data.substring(4);
+                data = _HDD.read(nextBlock);
+                nextBlock = this.getTSB(data);
+            }
+            program += data.substring(4);
+            return program;
+        }
+
         public readFile(filename): void {
+            console.log(localStorage);
+            console.log(this.files);
             if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
             }
-            var filenametsb = this.files[filename];
-            var tsb = _HDD.read(filenametsb[0], filenametsb[1], filenametsb[2]);
-            var data = _HDD.read(parseInt(tsb[0]), parseInt(tsb[1]), parseInt(tsb[2]));
-            _StdOut.putText(data);
+            var filenameTsb = this.files[filename];
+            var tsb = this.getTSB(_HDD.read(filenameTsb));
+
+            var data = _HDD.read(tsb);
+            var nextBlock = this.getTSB(data);
+            console.log(nextBlock);
+            while (nextBlock.track != 0 || nextBlock.sector != 0 || nextBlock.block != 0) {
+                _StdOut.putText(this.hexToString(data.substring(4)));
+                data = _HDD.read(nextBlock);
+                nextBlock = this.getTSB(data);
+            }
+            _StdOut.putText(this.hexToString(data.substring(4)));
             _StdOut.advanceLine();
             _OsShell.putPrompt();
 
@@ -155,28 +231,31 @@ module TSOS {
                 return;
             }
             var filenameTsb = this.files[filename];
+            var tsb = this.getTSB(_HDD.read(filenameTsb));
 
-            var tsb = _HDD.read(parseInt(filenameTsb[0]), parseInt(filenameTsb[1]), parseInt(filenameTsb[2]));
-            var fnBlock = this.AVAILABLE + filenameTsb + filename;
-            _HDD.write(fnBlock, parseInt(filenameTsb[0]), parseInt(filenameTsb[1]), parseInt(filenameTsb[2]));
+            var data = _HDD.read(tsb);
+            var nextBlock = this.getTSB(data);
+            while (nextBlock.track != 0 || nextBlock.sector != 0 || nextBlock.block != 0) {
+                var newData = this.AVAILABLE + data.substring(1);
+                _HDD.write(tsb, newData);
+                var data = _HDD.read(filenameTsb);
+                var nextBlock = this.getTSB(data);
+            }
 
-            var data = _HDD.read(parseInt(tsb[0]), parseInt(tsb[1]), parseInt(tsb[2]));
-            var block = this.AVAILABLE + tsb + data;
-            _HDD.write(block, parseInt(tsb[0]), parseInt(tsb[1]), parseInt(tsb[2]));
             _StdOut.putText("File '" + filename + "' deleted.");
             _StdOut.advanceLine();
             _OsShell.putPrompt();
-
             delete this.files[filename];
-
             _Kernel.krnTrace("[DELETE] Deleting file: " + filename);
         }
 
         public format(): void {
+            this.files = new Object();
             for (var i = 0; i < _HDD.tracks; i++) {
                 for (var j = 0; j < _HDD.sectors; j++) {
                     for (var k = 0; k < _HDD.blocks; k++) {
-                        _HDD.write(this.ZERO_BLOCK, i, j, k);
+                        var tsb = new TSB(i, j, k);
+                        _HDD.write(tsb, this.ZERO_BLOCK);
                     }
                 }
             }

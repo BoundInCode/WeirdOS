@@ -9,16 +9,23 @@ var TSOS;
             this.blocks = blocks;
         }
         HDD.prototype.init = function () { };
-        HDD.prototype.read = function (track, sector, block) {
-            var key = this.getKey(track, sector, block);
+        HDD.prototype.read = function (tsb) {
+            var key = this.getKey(tsb);
             return localStorage.getItem(key);
         };
-        HDD.prototype.write = function (data, track, sector, block) {
-            var key = this.getKey(track, sector, block);
-            localStorage.setItem(key, data);
+        HDD.prototype.write = function (tsb, data) {
+            if (data.length > this.blockSize * 2) {
+                alert("ERROR. Trying to write " + data.length + " bytes in one block.");
+            }
+            var zeros = "";
+            for (var i = 0; i < this.blockSize * 2 - data.length; i++) {
+                zeros += "0";
+            }
+            var key = this.getKey(tsb);
+            localStorage.setItem(key, data + zeros);
         };
-        HDD.prototype.getKey = function (track, sector, block) {
-            return track + "-" + sector + "-" + block;
+        HDD.prototype.getKey = function (tsb) {
+            return tsb.track + "-" + tsb.sector + "-" + tsb.block;
         };
         return HDD;
     })();

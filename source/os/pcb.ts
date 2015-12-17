@@ -26,6 +26,8 @@ module TSOS {
 
         public processState: TSOS.ProcessState;
         public onDisk: boolean;
+        public tsb: TSB;
+        public priority: number;
 
         constructor(pid: number, base: number, limit: number) {
             this.pid = pid;
@@ -42,11 +44,12 @@ module TSOS {
             this.endTime = _OSclock;
             this.waitTime = 0;
             this.onDisk = false;
+            this.tsb = null;
+            this.priority = 5;
         }
 
         public getTurnAroundTime() {
             return this.endTime - this.startTime;
         }
-
     }
 }

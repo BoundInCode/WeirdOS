@@ -24,6 +24,7 @@ module TSOS {
         public readyQueue: Queue;
         public cycle: number;
         public residentListDiv: any;
+        public mruProcess: TSOS.PCB;
 
         private currentPID: number;
         private static currentPID: number;
@@ -35,15 +36,13 @@ module TSOS {
             this.cycle = 0;
             this.residentListDiv = <HTMLCanvasElement>document.getElementById("residentList");
             this.currentSchedulingMethod = "rr";
+            this.mruProcess = null;
         }
 
         public init(): void { }
 
         public load(program: string): number {
             var programText = program.replace(/\s/g, '');
-
-            // Clear old program
-            //MemoryManager.clear(0, 255);
 
             // Load new program
             var base = MemoryManager.allocate(programText);
@@ -54,8 +53,9 @@ module TSOS {
 
             // Out of Memory. Store on disk
             if (base === -1) {
-                _krnFsDriver.allocate(program);
+                var tsb = _krnFsDriver.writeData(program, true);
                 processControlBlock.onDisk = true;
+                processControlBlock.tsb = tsb;
             }
 
             this.currentPID++;
@@ -173,13 +173,12 @@ module TSOS {
         public nextProcess(): PCB {
             var retVal = null;
             if (this.currentSchedulingMethod === "priority") {
-                // priority
-
-            } else {
-                // rr or fcfs
-                if (this.readyQueue.getSize() > 0) {
-                    retVal = this.readyQueue.dequeue();
-                }
+                this.readyQueue.q.sort(function(a, b){
+                    return a.priority - b.priority;
+                });
+            }
+            if (this.readyQueue.getSize() > 0) {
+                retVal = this.readyQueue.dequeue();
             }
             return retVal;
         }
@@ -210,17 +209,19 @@ module TSOS {
         }
 
         public priority(): void {
-            // TODO: Implement
-
+            if (!_CPU.isExecuting) {
+                if (!this.readyQueue.isEmpty()) {
+                    _KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_SWITCH_IRQ, null));
+                    this.cycle = 0;
+                }
+            }
         }
 
         public schedule(): void {
-
             // Increment Wait times
             for (var i = 0, len = this.readyQueue.q.length; i < len; i++) {
                 this.readyQueue.q[i].waitTime++;
             }
-
             switch(this.currentSchedulingMethod) {
                 case "rr":
                     this.roundRobin();

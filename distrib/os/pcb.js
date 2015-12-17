@@ -20,6 +20,8 @@ var TSOS;
             this.endTime = _OSclock;
             this.waitTime = 0;
             this.onDisk = false;
+            this.tsb = null;
+            this.priority = 5;
         }
         PCB.prototype.getTurnAroundTime = function () {
             return this.endTime - this.startTime;

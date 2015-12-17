@@ -17,18 +17,23 @@ module TSOS {
 
         public init(): void { }
 
-        public read(track: number, sector: number, block: number): string {
-            var key = this.getKey(track, sector, block);
+        public read(tsb: TSB): string {
+            var key = this.getKey(tsb);
             return localStorage.getItem(key);
         }
 
-        public write(data: string, track: number, sector: number, block: number): void {
-            var key = this.getKey(track, sector, block);
-            localStorage.setItem(key, data);
+        public write(tsb: TSB, data: string): void {
+            if (data.length > this.blockSize*2) {
+                alert("ERROR. Trying to write " + data.length + " bytes in one block.");
+            }
+            var zeros = "";
+            for (var i = 0; i < this.blockSize*2 - data.length; i++) { zeros += "0" }
+            var key = this.getKey(tsb);
+            localStorage.setItem(key, data + zeros);
         }
 
-        private getKey(track: number, sector: number, block: number): string {
-            return track + "-" + sector + "-" + block;
+        private getKey(tsb: TSB): string {
+            return tsb.track + "-" + tsb.sector + "-" + tsb.block;
         }
     }
 }

@@ -23,6 +23,7 @@ const KEYBOARD_IRQ: number = 1;
 const SYSCALL_IRQ: number = 2;
 const CONTEXT_SWITCH_IRQ: number = 3;
 const DISK_OPERATION_IRQ: number = 4;
+const PAGE_FAULT: number = 5;
 
 //
 // Global Variables

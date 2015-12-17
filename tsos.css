@@ -18,7 +18,13 @@ nav.navbar-default {
 }
 
 .navbar-brand {
-    color: white !important
+    /* color: white !important; */
+    color: #DC5B5B !important;
+    font-size: 32px;
+}
+
+.navbar-default {
+    background-color: white !important;
 }
 
 pre {
