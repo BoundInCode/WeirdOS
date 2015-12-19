@@ -121,6 +121,10 @@ var TSOS;
             return null;
         };
         DeviceDriverFileSystem.prototype.createFile = function (filename) {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             _Kernel.krnTrace("Creating file: " + filename);
             if (this.files[filename]) {
                 // File already exists
@@ -165,6 +169,10 @@ var TSOS;
             _HDD.write(tsb, this.ZERO_BLOCK);
         };
         DeviceDriverFileSystem.prototype.writeFile = function (filename, data) {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
@@ -204,6 +212,10 @@ var TSOS;
             return program;
         };
         DeviceDriverFileSystem.prototype.readFile = function (filename) {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             console.log(localStorage);
             if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
@@ -224,6 +236,10 @@ var TSOS;
             _Kernel.krnTrace("[READ] Reading file: " + filename);
         };
         DeviceDriverFileSystem.prototype.deleteFile = function (filename) {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
@@ -258,8 +274,13 @@ var TSOS;
             _StdOut.advanceLine();
             _OsShell.putPrompt();
             _Kernel.krnTrace("[FORMAT] Formatting disk.");
+            _HDD.formatted = true;
         };
         DeviceDriverFileSystem.prototype.ls = function () {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             for (var filename in this.files) {
                 _StdOut.putText(filename);
                 _StdOut.advanceLine();

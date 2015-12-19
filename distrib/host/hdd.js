@@ -4,6 +4,7 @@ var TSOS;
     var HDD = (function () {
         function HDD(tracks, sectors, blocks) {
             this.blockSize = 64;
+            this.formatted = false;
             this.tracks = tracks;
             this.sectors = sectors;
             this.blocks = blocks;

@@ -129,6 +129,10 @@ module TSOS {
         }
 
         public createFile(filename: string): void {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             _Kernel.krnTrace("Creating file: " + filename);
 
             if (this.files[filename]) {
@@ -177,6 +181,10 @@ module TSOS {
         }
 
         public writeFile(filename, data): void {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
@@ -220,6 +228,10 @@ module TSOS {
         }
 
         public readFile(filename): void {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             console.log(localStorage);
             if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
@@ -243,6 +255,10 @@ module TSOS {
         }
 
         public deleteFile(filename): void {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
@@ -280,9 +296,14 @@ module TSOS {
             _StdOut.advanceLine();
             _OsShell.putPrompt();
             _Kernel.krnTrace("[FORMAT] Formatting disk.");
+            _HDD.formatted = true;
         }
 
         public ls(): void {
+            if (!_HDD.formatted) {
+                _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                return;
+            }
             for (var filename in this.files) {
                 _StdOut.putText(filename);
                 _StdOut.advanceLine();

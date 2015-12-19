@@ -427,8 +427,8 @@ module TSOS {
             var priority = 5;
 
             if (args.length > 0) {
-                if (parseInt(args[0]) {
-                    priority = args[0]
+                if (parseInt(args[0])) {
+                    priority = parseInt(args[0]);
                 } else {
                     _StdOut.putText("Error. Priority must be an int.");
                     return;

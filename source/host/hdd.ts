@@ -9,6 +9,7 @@ module TSOS {
         public blocks: number;
         public blockSize: number = 64;
         private hddTable: any;
+        public formatted: boolean = false;
 
         constructor(tracks: number, sectors: number, blocks: number) {
             this.tracks = tracks;

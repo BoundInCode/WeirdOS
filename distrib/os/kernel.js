@@ -62,8 +62,8 @@ var TSOS;
         };
         Kernel.prototype.krnShutdown = function () {
             this.krnTrace("begin shutdown OS");
-            for (var i = 0; i < this.residentList.length; i++) {
-                var process = this.residentList[i];
+            for (var i = 0; i < _ProcessManager.residentList.length; i++) {
+                var process = _ProcessManager.residentList[i];
                 if (process.processState !== TSOS.ProcessState.TERMINATED) {
                     _StdOut.putText("There are currently running processes. Shutdown aborted.");
                     return;
@@ -73,7 +73,7 @@ var TSOS;
             this.krnDisableInterrupts();
             // Unload the Device Drivers
             _krnKeyboardDriver.status = 'unloaded';
-            _krnKFsDriver.status = 'unloaded';
+            _krnFsDriver.status = 'unloaded';
             this.krnTrace("end shutdown OS");
         };
         Kernel.prototype.krnOnCPUClockPulse = function () {

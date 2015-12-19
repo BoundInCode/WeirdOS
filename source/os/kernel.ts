@@ -74,8 +74,8 @@ module TSOS {
 
         public krnShutdown() {
             this.krnTrace("begin shutdown OS");
-            for (var i = 0; i < this.residentList.length; i++) {
-                var process = this.residentList[i];
+            for (var i = 0; i < _ProcessManager.residentList.length; i++) {
+                var process = _ProcessManager.residentList[i];
                 if (process.processState !== ProcessState.TERMINATED) {
                     _StdOut.putText("There are currently running processes. Shutdown aborted.");
                     return;
@@ -86,7 +86,7 @@ module TSOS {
 
             // Unload the Device Drivers
             _krnKeyboardDriver.status = 'unloaded';
-            _krnKFsDriver.status = 'unloaded';
+            _krnFsDriver.status = 'unloaded';
             this.krnTrace("end shutdown OS");
         }
 
