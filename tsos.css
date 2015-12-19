@@ -54,6 +54,15 @@ body {
     overflow-y: auto;
 }
 
+#divHdd {
+    height: 187px;
+    overflow-y: auto;
+}
+
+#hddTable td {
+    white-space: nowrap;
+}
+
 #consolePanel {
     width: 502px;
 }

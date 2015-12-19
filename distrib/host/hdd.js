@@ -7,8 +7,23 @@ var TSOS;
             this.tracks = tracks;
             this.sectors = sectors;
             this.blocks = blocks;
+            this.hddTable = document.getElementById("hddTable");
         }
-        HDD.prototype.init = function () { };
+        HDD.prototype.init = function () {
+            var nextRow;
+            for (var i = 0; i < _HDD.tracks; i++) {
+                for (var j = 0; j < _HDD.sectors; j++) {
+                    for (var k = 0; k < _HDD.blocks; k++) {
+                        var tsb = new TSOS.TSB(i, j, k);
+                        var key = this.getKey(tsb);
+                        nextRow = "<tr><td>" + key + "</td>"
+                            + "<td id='hdd" + key + "'>" + this.read(tsb) + "</td>";
+                        this.hddTable.innerHTML += nextRow;
+                        console.log(tsb);
+                    }
+                }
+            }
+        };
         HDD.prototype.read = function (tsb) {
             var key = this.getKey(tsb);
             return localStorage.getItem(key);
@@ -17,12 +32,13 @@ var TSOS;
             if (data.length > this.blockSize * 2) {
                 alert("ERROR. Trying to write " + data.length + " bytes in one block.");
             }
-            var zeros = "";
-            for (var i = 0; i < this.blockSize * 2 - data.length; i++) {
-                zeros += "0";
+            for (var i = data.length; i < this.blockSize * 2; i++) {
+                data += "0";
             }
             var key = this.getKey(tsb);
-            localStorage.setItem(key, data + zeros);
+            localStorage.setItem(key, data);
+            var hddId = "hdd" + key;
+            document.getElementById(hddId).innerHTML = data;
         };
         HDD.prototype.getKey = function (tsb) {
             return tsb.track + "-" + tsb.sector + "-" + tsb.block;

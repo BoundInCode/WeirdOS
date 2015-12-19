@@ -86,7 +86,7 @@ var TSOS;
                 nextBlock = this.writeHex(program.substring(124));
                 str = program.substring(0, 124);
             }
-            _HDD.write(block, this.UNAVAILABLE + nextBlock.toString() + str);
+            _HDD.write(block, this.UNAVAILABLE + nextBlock + str);
             return block;
         };
         DeviceDriverFileSystem.prototype.writeFileContents = function (fileContents) {
@@ -170,7 +170,7 @@ var TSOS;
             this.deleteFile(filename);
             var filenameTsb = this.files[filename];
             var tsb = this.getTSB(_HDD.read(filenameTsb));
-            if (tsb.track == 0 && tsb.sector == 0 && tsb.block == 0) {
+            while (tsb.track == 0 && tsb.sector == 0 && tsb.block == 0) {
                 tsb = this.nextAvailableBlock();
                 var str = this.stringToHex(filename);
                 _HDD.write(filenameTsb, this.UNAVAILABLE + tsb + str);
