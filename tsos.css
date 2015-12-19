@@ -50,17 +50,19 @@ body {
 }
 
 #divMem {
-    height: 265px;
+    height: 182px;
     overflow-y: auto;
 }
 
-#divHdd {
-    height: 187px;
-    overflow-y: auto;
+#divHdd .panel-body {
+    overflow: auto;
+    height: 120px;
 }
 
 #hddTable td {
     white-space: nowrap;
+    font-size: 0.8em;
+    font-family: monospace;
 }
 
 #consolePanel {
@@ -107,7 +109,7 @@ textArea {
 }
 
 #divHostLog {
-    width: 500px;
+    /* width: 500px; */
 }
 
 h1 {

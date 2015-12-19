@@ -74,6 +74,7 @@ var TSOS;
             this.CurrentPCB = process;
             process.processState = TSOS.ProcessState.RUNNING;
             _ProcessManager.updatePCB(this.CurrentPCB);
+            _ProcessManager.mruProcess = process;
             this.isExecuting = true;
         };
         Cpu.prototype.hexStr = function (num) {

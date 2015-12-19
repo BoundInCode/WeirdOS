@@ -1,290 +1,291 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <meta name="author"             content="Alan G. Labouseur" />
-    <link rel="stylesheet" href="distrib/css/bootstrap.min.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
-    <link href="distrib/css/sb-admin-2.css" rel="stylesheet">
-    <link href="distrib/css/morris.css" rel="stylesheet">
-    <link href="distrib/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <title>
-        WeirdOS - a browser-based virtual Operating System in TypeScript
-    </title>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <meta name="author"             content="Alan G. Labouseur" />
+        <link rel="stylesheet" href="distrib/css/bootstrap.min.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
+        <link href="distrib/css/sb-admin-2.css" rel="stylesheet">
+        <link href="distrib/css/morris.css" rel="stylesheet">
+        <link href="distrib/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <title>
+            WeirdOS - a browser-based virtual Operating System in TypeScript
+        </title>
 
-    <!-- Globals CONSTANTS and _Variables. Must included be first. -->
-    <script src="distrib/js/jquery-1.11.3.min.js"></script>
-    <script src="distrib/js/bootstrap.min.js"></script>
+        <!-- Globals CONSTANTS and _Variables. Must included be first. -->
+        <script src="distrib/js/jquery-1.11.3.min.js"></script>
+        <script src="distrib/js/bootstrap.min.js"></script>
 
-    <script type="text/javascript" src="distrib/globals.js"></script>
+        <script type="text/javascript" src="distrib/globals.js"></script>
 
-    <!-- Host (Virtual Machine / Hardware Simulation) Routines -->
-    <script type="text/javascript" src="distrib/host/control.js"></script>
-    <script type="text/javascript" src="distrib/host/devices.js"></script>
-    <script type="text/javascript" src="distrib/host/cpu.js"></script>
-    <script type="text/javascript" src="distrib/host/mainMemory.js"></script>
-    <script type="text/javascript" src="distrib/host/hdd.js"></script>
+        <!-- Host (Virtual Machine / Hardware Simulation) Routines -->
+        <script type="text/javascript" src="distrib/host/control.js"></script>
+        <script type="text/javascript" src="distrib/host/devices.js"></script>
+        <script type="text/javascript" src="distrib/host/cpu.js"></script>
+        <script type="text/javascript" src="distrib/host/mainMemory.js"></script>
+        <script type="text/javascript" src="distrib/host/hdd.js"></script>
 
-    <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
-    <script type="text/javascript" src="distrib/os/interrupt.js"></script>
-    <script type="text/javascript" src="distrib/os/canvastext.js"></script>
-    <script type="text/javascript" src="distrib/os/console.js"></script>
-    <script type="text/javascript" src="distrib/os/deviceDriver.js"></script>
-    <script type="text/javascript" src="distrib/os/deviceDriverKeyboard.js"></script>
-    <script type="text/javascript" src="distrib/os/deviceDriverFileSystem.js"></script>
-    <script type="text/javascript" src="distrib/os/queue.js"></script>
-    <script type="text/javascript" src="distrib/os/shell.js"></script>
-    <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
-    <script type="text/javascript" src="distrib/os/userCommand.js"></script>
-    <script type="text/javascript" src="distrib/os/kernel.js"></script>
-    <script type="text/javascript" src="distrib/os/pcb.js"></script>
-    <script type="text/javascript" src="distrib/os/TSB.js"></script>
+        <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
+        <script type="text/javascript" src="distrib/os/interrupt.js"></script>
+        <script type="text/javascript" src="distrib/os/canvastext.js"></script>
+        <script type="text/javascript" src="distrib/os/console.js"></script>
+        <script type="text/javascript" src="distrib/os/deviceDriver.js"></script>
+        <script type="text/javascript" src="distrib/os/deviceDriverKeyboard.js"></script>
+        <script type="text/javascript" src="distrib/os/deviceDriverFileSystem.js"></script>
+        <script type="text/javascript" src="distrib/os/queue.js"></script>
+        <script type="text/javascript" src="distrib/os/shell.js"></script>
+        <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
+        <script type="text/javascript" src="distrib/os/userCommand.js"></script>
+        <script type="text/javascript" src="distrib/os/kernel.js"></script>
+        <script type="text/javascript" src="distrib/os/pcb.js"></script>
+        <script type="text/javascript" src="distrib/os/TSB.js"></script>
 
-    <script type="text/javascript" src="distrib/os/processManager.js"></script>
-    <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
+        <script type="text/javascript" src="distrib/os/processManager.js"></script>
+        <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
 
-    <!-- Other Routines -->
-    <script type="text/javascript" src="distrib/utils.js"></script>
-    <!-- Uncomment this line below to enable GLaDOS testing -->
-    <!-- <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script> -->
-</head>
+        <!-- Other Routines -->
+        <script type="text/javascript" src="distrib/utils.js"></script>
+        <!-- Uncomment this line below to enable GLaDOS testing -->
+        <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
+    </head>
 
-<body onload="onDocumentLoad()">
+    <body onload="onDocumentLoad()">
 
-<div id="page-wrapper divMain" style="width:100%;">
+        <div id="page-wrapper divMain" style="width:100%;">
 
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="index.html">Weird<strong>OS</strong></a>
-        </div>
-    </nav>
-
-    <!-- Small modal -->
-    <div id="energy-modal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">No Energy</h4>
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">Weird<strong>OS</strong></a>
                 </div>
-                <div class="modal-body">
-                    <p>You have run out of energy. Would you like to buy more energy for $0.99?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Wait</button>
-                    <button type="button" class="btn btn-primary">Buy Energy</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            </nav>
 
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-8">
-            <div id="divButtonBar" style="margin:4px;">
-                <input type="button"
-                       id = "btnStartOS"
-                       name="brnStartOS"
-                       class="btn btn-success"
-                       value="Start"
-                       tabindex="0"
-                       onclick="TSOS.Control.hostBtnStartOS_click(this);">
+            <!-- Small modal -->
+            <div id="energy-modal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">No Energy</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>You have run out of energy. Would you like to buy more energy for $0.99?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Wait</button>
+                            <button type="button" class="btn btn-primary">Buy Energy</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
 
-                <input type="button"
-                       id = "btnHaltOS"
-                       name="brnHaltOS"
-                       class="btn btn-default"
-                       disabled="disabled"
-                       value="Halt"
-                       tabindex="1"
-                       onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-8">
+                    <div id="divButtonBar" style="margin:4px;">
+                        <input type="button"
+                        id = "btnStartOS"
+                        name="brnStartOS"
+                        class="btn btn-success"
+                        value="Start"
+                        tabindex="0"
+                        onclick="TSOS.Control.hostBtnStartOS_click(this);">
 
-                <input type="button"
-                       id = "btnReset"
-                       name="brnReset"
-                       class="btn btn-danger"
-                       disabled="disabled"
-                       value="Reset"
-                       tabindex="2"
-                       onclick="TSOS.Control.hostBtnReset_click(this);">
+                        <input type="button"
+                        id = "btnHaltOS"
+                        name="brnHaltOS"
+                        class="btn btn-default"
+                        disabled="disabled"
+                        value="Halt"
+                        tabindex="1"
+                        onclick="TSOS.Control.hostBtnHaltOS_click(this);">
 
-                <div class="btn-group" data-toggle="buttons">
-                    <input type="button"
-                           id = "btnSingleStep"
-                           name="brnSingleStep"
-                           class="btn btn-primary"
-                           value="Single Step Mode"
-                           tabindex="2"
-                           onclick="TSOS.Control.hostBtnToggleSingleStep_click(this);">
+                        <input type="button"
+                        id = "btnReset"
+                        name="brnReset"
+                        class="btn btn-danger"
+                        disabled="disabled"
+                        value="Reset"
+                        tabindex="2"
+                        onclick="TSOS.Control.hostBtnReset_click(this);">
 
-                    <input type="button"
-                           class="btn btn-primary"
-                           disabled="disabled"
-                           id="btnStep"
-                           value="Step"
-                           tabindex="2"
-                           onclick="TSOS.Control.hostBtnStep_click(this);">
-                </div>
-                <span class="label label-default" id="status">Active</span>
-                <span class="label label-default" id="dateBadge">today</span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-8">
-            <div class="progress" id="energyDiv" hidden>
-                <div class="progress-bar progress-bar-striped active" id="energyBar" style="width: 100%">Energy</div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-1"></div>
-        <div class="col-lg-4">
-            <div class="panel panel-default" id="consolePanel">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Console</h6>
-                </div>
-                <div class="panel-body" id="divConsole">
-                    <canvas id="display"
-                            width="1000px"
-                            height="1000px"
-                            tabindex="3">
-                    </canvas>
+                        <div class="btn-group" data-toggle="buttons">
+                            <input type="button"
+                            id = "btnSingleStep"
+                            name="brnSingleStep"
+                            class="btn btn-primary"
+                            value="Single Step Mode"
+                            tabindex="2"
+                            onclick="TSOS.Control.hostBtnToggleSingleStep_click(this);">
+
+                            <input type="button"
+                            class="btn btn-primary"
+                            disabled="disabled"
+                            id="btnStep"
+                            value="Step"
+                            tabindex="2"
+                            onclick="TSOS.Control.hostBtnStep_click(this);">
+                        </div>
+                        <span class="label label-default" id="status">Active</span>
+                        <span class="label label-default" id="dateBadge">today</span>
+                    </div>
                 </div>
             </div>
-            <div class="panel panel-default" id="divUserProgramInput">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Program Input</h6>
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-8">
+                    <div class="progress" id="energyDiv" hidden>
+                        <div class="progress-bar progress-bar-striped active" id="energyBar" style="width: 100%">Energy</div>
+                    </div>
                 </div>
-                <div class="panel-body">
-                    <pre>
+            </div>
+            <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default" id="consolePanel">
+                        <div class="panel-heading">
+                            <h6 class="panel-title">Console</h6>
+                        </div>
+                        <div class="panel-body" id="divConsole">
+                            <canvas id="display"
+                                width="1000px"
+                                height="1000px"
+                                tabindex="3">
+                            </canvas>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" id="divUserProgramInput">
+                        <div class="panel-heading">
+                            <h6 class="panel-title">Program Input</h6>
+                        </div>
+                        <div class="panel-body">
+                            <pre>
                         <textarea name="taProgramInput" id="taProgramInput"></textarea>
                     </pre>
+                    </div>
                 </div>
             </div>
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">Memory</h6>
+                    </div>
+                    <div class="panel-body" id="divMem">
+                        <table class="table">
+                            <h4 id="memoryMessage">Turn on WeirdOS to initiate memory.</h4>
+                            <tbody id="memTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-            <div class="panel panel-default" id="divHostLog">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Host Log</h6>
-                </div>
-                <div class="panel-body" id="divLog">
-                    <textarea name="taHostLog" id="taHostLog"></textarea>
-                </div>
-            </div>
 
-        </div>
-        <div class="col-lg-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Memory</h6>
-                </div>
-                <div class="panel-body" id="divMem">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">Next Instruction</h6>
+                    </div>
                     <table class="table">
-                        <h4 id="memoryMessage">Turn on WeirdOS to initiate memory.</h4>
-                        <tbody id="memTable">
+                        <tbody>
+                            <tr>
+                                <td width="50px" id="sym-value">N/A</td>
+                                <td width="300px" id="ir-value">N/A</td>
+                                <td id="arg-value">N/A</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">CPU</h6>
+                    </div>
 
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Next Instruction</h6>
-                </div>
-                <table class="table">
-                    <tbody>
-                    <tr>
-                        <td width="50px" id="sym-value">N/A</td>
-                        <td width="300px" id="ir-value">N/A</td>
-                        <td id="arg-value">N/A</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h6 class="panel-title">CPU</h6>
-                </div>
-
-                <table class="table table-striped text-center">
-                    <thead>
-                    <tr>
-                        <td>PC</td>
-                        <td>Acc</td>
-                        <td>X</td>
-                        <td>Y</td>
-                        <td>Z</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td id="pc-value">0</td>
-                        <td id="acc-value">0</td>
-                        <td id="x-value">0</td>
-                        <td id="y-value">0</td>
-                        <td id="z-value">0</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Resident List</h6>
-                </div>
-
-                <table class="table table-striped text-center">
-                    <thead>
-                    <tr>
-                        <td>PID</td>
-                        <td>PC</td>
-                        <td>Acc</td>
-                        <td>X</td>
-                        <td>Y</td>
-                        <td>Z</td>
-                        <td>Base</td>
-                        <td>Limit</td>
-                        <td>State</td>
-                    </tr>
-                    </thead>
-                    <tbody id="residentList">
-                    </tbody>
-                </table>
-            </div>
-            <div class="panel panel-default" id="divHdd">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Hard Drive</h6>
-                </div>
-                <div class="panel-body">
-                    <table class="table">
-                        <tbody id="hddTable">
+                    <table class="table table-striped text-center">
+                        <thead>
+                            <tr>
+                                <td>PC</td>
+                                <td>Acc</td>
+                                <td>X</td>
+                                <td>Y</td>
+                                <td>Z</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="pc-value">0</td>
+                                <td id="acc-value">0</td>
+                                <td id="x-value">0</td>
+                                <td id="y-value">0</td>
+                                <td id="z-value">0</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">Resident List</h6>
+                    </div>
+
+                    <table class="table table-striped text-center">
+                        <thead>
+                            <tr>
+                                <td>PID</td>
+                                <td>PC</td>
+                                <td>Acc</td>
+                                <td>X</td>
+                                <td>Y</td>
+                                <td>Z</td>
+                                <td>Base</td>
+                                <td>Limit</td>
+                                <td>State</td>
+                            </tr>
+                        </thead>
+                        <tbody id="residentList">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="panel panel-default" id="divHostLog">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">Host Log</h6>
+                    </div>
+                    <div class="panel-body" id="divLog">
+                        <textarea name="taHostLog" id="taHostLog"></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-lg-1"></div>
-    </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-8">
+                <div class="panel panel-default" id="divHdd">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">Hard Drive</h6>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <tbody id="hddTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-    <div class="gamify-img" id="ad-right" hidden>
-        <img src="distrib/images/spectre-ad.jpg" alt="spectre"/>
-    </div>
-    <div class="gamify-img" id="ad-botright" hidden>
-        <img src="distrib/images/lotus-ad.jpg" alt="lotus"/>
-    </div>
+            <div class="gamify-img" id="ad-right" hidden>
+                <img src="distrib/images/spectre-ad.jpg" alt="spectre"/>
+            </div>
+            <div class="gamify-img" id="ad-botright" hidden>
+                <img src="distrib/images/lotus-ad.jpg" alt="lotus"/>
+            </div>
 
-</div>
+        </div>
 
-<p class="footerText" style="clear:both;">
-    <br>
-    Copyright &copy; 2008 - 2015 No Rights Reserved.
-    <br>
-    Reproduction is inhibited without the express written consent of
-    Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
-</p>
+        <p class="footerText" style="clear:both;">
+            <br>
+            Copyright &copy; 2008 - 2015 No Rights Reserved.
+            <br>
+            Reproduction is inhibited without the express written consent of
+            Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
+        </p>
 
-</body>
+    </body>
 </html>

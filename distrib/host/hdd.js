@@ -16,10 +16,9 @@ var TSOS;
                     for (var k = 0; k < _HDD.blocks; k++) {
                         var tsb = new TSOS.TSB(i, j, k);
                         var key = this.getKey(tsb);
-                        nextRow = "<tr><td>" + key + "</td>"
+                        nextRow = "<tr><td><strong>" + key + "</strong></td>"
                             + "<td id='hdd" + key + "'>" + this.read(tsb) + "</td>";
                         this.hddTable.innerHTML += nextRow;
-                        console.log(tsb);
                     }
                 }
             }

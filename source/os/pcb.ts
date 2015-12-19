@@ -29,7 +29,7 @@ module TSOS {
         public tsb: TSB;
         public priority: number;
 
-        constructor(pid: number, base: number, limit: number) {
+        constructor(pid: number, base: number, limit: number, priority: number) {
             this.pid = pid;
             this.base = base;
             this.limit = limit;
@@ -45,7 +45,7 @@ module TSOS {
             this.waitTime = 0;
             this.onDisk = false;
             this.tsb = null;
-            this.priority = 5;
+            this.priority = priority;
         }
 
         public getTurnAroundTime() {

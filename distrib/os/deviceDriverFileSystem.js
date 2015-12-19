@@ -79,12 +79,13 @@ var TSOS;
         DeviceDriverFileSystem.prototype.writeHex = function (program) {
             _Kernel.krnTrace("Writing program to disk");
             var block = this.nextAvailableBlock();
+            _HDD.write(block, this.UNAVAILABLE_BLOCK); // reserved
             var nextBlock = new TSOS.TSB(0, 0, 0);
             var str = program;
-            if (program.length > 124) {
-                console.log("Program.length = " + program.length);
-                nextBlock = this.writeHex(program.substring(124));
-                str = program.substring(0, 124);
+            var maxLength = _HDD.blockSize * 2 - this.HEADER_SIZE;
+            if (program.length > maxLength) {
+                nextBlock = this.writeHex(program.substring(maxLength));
+                str = program.substring(0, maxLength);
             }
             _HDD.write(block, this.UNAVAILABLE + nextBlock + str);
             return block;
@@ -94,9 +95,10 @@ var TSOS;
             var block = this.nextAvailableBlock();
             var nextBlock = new TSOS.TSB(0, 0, 0);
             var str = fileContents;
-            if (fileContents.length > 60) {
-                nextBlock = this.writeFileContents(str.substring(60));
-                str = str.substring(0, 60);
+            var maxLength = _HDD.blockSize - this.HEADER_SIZE / 2;
+            if (fileContents.length > maxLength) {
+                nextBlock = this.writeFileContents(str.substring(maxLength));
+                str = str.substring(0, maxLength);
             }
             str = this.stringToHex(str);
             _HDD.write(block, this.UNAVAILABLE + nextBlock + str);
@@ -110,7 +112,7 @@ var TSOS;
                         var data = _HDD.read(tsb);
                         if (this.isAvailable(data)) {
                             var block = new TSOS.TSB(i, j, k);
-                            _HDD.write(block, this.UNAVAILABLE_BLOCK); // reserved
+                            // _HDD.write(block, this.UNAVAILABLE_BLOCK); // reserved
                             return block;
                         }
                     }
@@ -193,12 +195,10 @@ var TSOS;
             var program = "";
             var data = _HDD.read(tsb);
             var nextBlock = this.getTSB(data);
-            if (nextBlock.track != 0 || nextBlock.sector != 0 || nextBlock.block != 0) {
+            while (nextBlock.toString() != "000") {
                 program += data.substring(4);
                 data = _HDD.read(nextBlock);
                 nextBlock = this.getTSB(data);
-                console.log("data: " + data);
-                console.log("nextBlock: " + nextBlock);
             }
             program += data.substring(4);
             return program;

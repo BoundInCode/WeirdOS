@@ -421,14 +421,24 @@ module TSOS {
             }
         }
 
-        public shellLoad() {
+        public shellLoad(args: Array<string>) {
             var programInput = (<HTMLTextAreaElement>document.getElementById("taProgramInput")).value;
             programInput = programInput.replace(/(\s|\r\n|\n|\r)/gm,"");
+            var priority = 5;
+
+            if (args.length > 0) {
+                if (parseInt(args[0]) {
+                    priority = args[0]
+                } else {
+                    _StdOut.putText("Error. Priority must be an int.");
+                    return;
+                }
+            }
 
             if (programInput.length === 0) {
                 _StdOut.putText("Error. The program input field is empty.");
             } else if(/^[a-fA-F0-9 ]*$/.test(programInput)) {
-                var pid = _ProcessManager.load(programInput);
+                var pid = _ProcessManager.load(programInput, priority);
                 if (pid === -1) {
                     _StdOut.putText("Out of Memory. Could not load program.");
                 } else {

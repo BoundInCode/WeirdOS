@@ -41,14 +41,14 @@ module TSOS {
 
         public init(): void { }
 
-        public load(program: string): number {
+        public load(program: string, priority: number): number {
             var programText = program.replace(/\s/g, '');
 
             // Load new program
             var base = MemoryManager.allocate(programText);
             var limit = base + 256;// programText.length;
 
-            var processControlBlock = new PCB(this.currentPID, base, limit);
+            var processControlBlock = new PCB(this.currentPID, base, limit, priority);
             this.addPCB(processControlBlock)
 
             // Out of Memory. Store on disk

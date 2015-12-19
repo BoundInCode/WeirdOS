@@ -74,14 +74,19 @@ module TSOS {
 
         public krnShutdown() {
             this.krnTrace("begin shutdown OS");
-            // TODO: Check for running processes.  If there are some, alert and stop. Else...
-            // ... Disable the Interrupts.
+            for (var i = 0; i < this.residentList.length; i++) {
+                var process = this.residentList[i];
+                if (process.processState !== ProcessState.TERMINATED) {
+                    _StdOut.putText("There are currently running processes. Shutdown aborted.");
+                    return;
+                }
+            }
             this.krnTrace("Disabling the interrupts.");
             this.krnDisableInterrupts();
-            //
-            // Unload the Device Drivers?
-            // More?
-            //
+
+            // Unload the Device Drivers
+            _krnKeyboardDriver.status = 'unloaded';
+            _krnKFsDriver.status = 'unloaded';
             this.krnTrace("end shutdown OS");
         }
 
@@ -187,11 +192,11 @@ module TSOS {
 
             // STEP 1: Save MRU process
             var pcb = _ProcessManager.mruProcess;
+            console.log("swapping out : " + pcb.pid);
             var program = "";
-            for (var i = 0; i < 256; i++) {
+            for (var i = 0; i < 128; i++) {
                 program += MemoryManager.read(i, pcb);
             }
-            console.log(program);
             var tsb = _krnFsDriver.writeHex(program);
             pcb.onDisk = true;
             pcb.tsb = tsb;
@@ -206,6 +211,7 @@ module TSOS {
                 }
             }
             var newProgram = _krnFsDriver.readData(newPcb.tsb);
+            console.log("swapping in: " + newPcb.pid);
             newPcb.base = pcb.base;
             newPcb.limit = pcb.limit;
             newPcb.onDisk = false;
@@ -232,7 +238,6 @@ module TSOS {
                     _KernelInterruptQueue.enqueue(new Interrupt(PAGE_FAULT, [process.pid]));
                 } else {
                     _CPU.start(process);
-                    _ProcessManager.mruProcess = process;
                 }
             }
         }

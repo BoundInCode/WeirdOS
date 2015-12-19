@@ -6,7 +6,7 @@ Process Control Block prototype for the OS
 var TSOS;
 (function (TSOS) {
     var PCB = (function () {
-        function PCB(pid, base, limit) {
+        function PCB(pid, base, limit, priority) {
             this.pid = pid;
             this.base = base;
             this.limit = limit;
@@ -21,7 +21,7 @@ var TSOS;
             this.waitTime = 0;
             this.onDisk = false;
             this.tsb = null;
-            this.priority = 5;
+            this.priority = priority;
         }
         PCB.prototype.getTurnAroundTime = function () {
             return this.endTime - this.startTime;

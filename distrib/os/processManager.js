@@ -26,12 +26,12 @@ var TSOS;
             this.mruProcess = null;
         }
         ProcessManager.prototype.init = function () { };
-        ProcessManager.prototype.load = function (program) {
+        ProcessManager.prototype.load = function (program, priority) {
             var programText = program.replace(/\s/g, '');
             // Load new program
             var base = TSOS.MemoryManager.allocate(programText);
             var limit = base + 256; // programText.length;
-            var processControlBlock = new TSOS.PCB(this.currentPID, base, limit);
+            var processControlBlock = new TSOS.PCB(this.currentPID, base, limit, priority);
             this.addPCB(processControlBlock);
             // Out of Memory. Store on disk
             if (base === -1) {

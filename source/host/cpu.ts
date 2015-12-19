@@ -72,6 +72,7 @@ module TSOS {
 
             process.processState = ProcessState.RUNNING;
             _ProcessManager.updatePCB(this.CurrentPCB);
+            _ProcessManager.mruProcess = process;
             this.isExecuting = true;
         }
 
