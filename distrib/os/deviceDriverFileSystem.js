@@ -121,20 +121,26 @@ var TSOS;
             return null;
         };
         DeviceDriverFileSystem.prototype.createFile = function (filename) {
+            var maxLength = _HDD.blockSize - 2;
             if (!_HDD.formatted) {
                 _StdOut.putText("Please format the HDD before duing any Disk I/O.");
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
                 return;
             }
-            _Kernel.krnTrace("Creating file: " + filename);
-            if (this.files[filename]) {
+            else if (this.files[filename]) {
                 // File already exists
                 _StdOut.putText("File already exists with name: '" + filename + "'");
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
                 return;
             }
+            else if (filename.length > maxLength) {
+                _StdOut.putText("File must be less than 62 characters.");
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+            }
+            _Kernel.krnTrace("Creating file: " + filename);
             // get next available block
             for (var i = 0; i < _HDD.sectors; i++) {
                 for (var j = 0; j < _HDD.blocks; j++) {
@@ -286,8 +292,7 @@ var TSOS;
                 return;
             }
             for (var filename in this.files) {
-                _StdOut.putText(filename);
-                _StdOut.advanceLine();
+                _StdOut.putText(filename + "      ");
             }
             _StdOut.advanceLine();
             _OsShell.putPrompt();
