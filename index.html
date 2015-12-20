@@ -155,7 +155,7 @@
                         <div class="panel-body" id="divConsole">
                             <canvas id="display"
                                 width="1000px"
-                                height="1000px"
+                                height="800px"
                                 tabindex="3">
                             </canvas>
                         </div>
@@ -165,9 +165,15 @@
                             <h6 class="panel-title">Program Input</h6>
                         </div>
                         <div class="panel-body">
-                            <pre>
-                        <textarea name="taProgramInput" id="taProgramInput"></textarea>
-                    </pre>
+                            <textarea name="taProgramInput" id="taProgramInput"></textarea>
+                        </div>
+                </div>
+                <div class="panel panel-default" id="divHostLog" style="width:500px">
+                    <div class="panel-heading">
+                        <h6 class="panel-title">Host Log</h6>
+                    </div>
+                    <div class="panel-body" id="divLog">
+                        <textarea name="taHostLog" id="taHostLog"></textarea>
                     </div>
                 </div>
             </div>
@@ -200,7 +206,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="panel panel-default">
+                <div class="panel panel-default" id="cpuPanel">
                     <div class="panel-heading">
                         <h6 class="panel-title">CPU</h6>
                     </div>
@@ -232,33 +238,27 @@
                         <h6 class="panel-title">Resident List</h6>
                     </div>
 
-                    <table class="table table-striped text-center">
-                        <thead>
-                            <tr>
-                                <td>PID</td>
-                                <td>PC</td>
-                                <td>Acc</td>
-                                <td>X</td>
-                                <td>Y</td>
-                                <td>Z</td>
-                                <td>Base</td>
-                                <td>Limit</td>
-                                <td>State</td>
-                            </tr>
-                        </thead>
-                        <tbody id="residentList">
-                        </tbody>
-                    </table>
+                    <div class="panel-body" id="residentListBody">
+                        <table class="table table-striped text-center" >
+                            <thead>
+                                <tr>
+                                    <td>PID</td>
+                                    <td>PC</td>
+                                    <td>Acc</td>
+                                    <td>X</td>
+                                    <td>Y</td>
+                                    <td>Z</td>
+                                    <td>Base</td>
+                                    <td>Limit</td>
+                                    <td>State</td>
+                                </tr>
+                            </thead>
+                            <tbody id="residentList">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="panel panel-default" id="divHostLog">
-                    <div class="panel-heading">
-                        <h6 class="panel-title">Host Log</h6>
-                    </div>
-                    <div class="panel-body" id="divLog">
-                        <textarea name="taHostLog" id="taHostLog"></textarea>
-                    </div>
-                </div>
             </div>
         </div>
 

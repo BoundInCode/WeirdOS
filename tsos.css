@@ -49,18 +49,28 @@ body {
 #divConsole {
     overflow: scroll;
     width: 500px;
-    height: 500px;
+    height: 400px;
     padding: 0 !important;
 }
 
 #divMem {
-    height: 182px;
+    height: 120px;
+    overflow-y: auto;
+}
+
+#divMem td {
+    font-size: 0.8em;
+    padding: 2px;
+}
+
+#residentListBody {
+    height: 235px;
     overflow-y: auto;
 }
 
 #divHdd .panel-body {
     overflow: auto;
-    height: 120px;
+    height: 100px;
 }
 
 #hddTable td {
@@ -72,6 +82,11 @@ body {
 
 #consolePanel {
     width: 502px;
+}
+
+#taProgramInput {
+    font-family: monospace;
+    font-size: 0.8em;
 }
 
 #ad-right {
