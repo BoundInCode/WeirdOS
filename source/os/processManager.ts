@@ -222,6 +222,7 @@ module TSOS {
             for (var i = 0, len = this.readyQueue.q.length; i < len; i++) {
                 this.readyQueue.q[i].waitTime++;
             }
+
             switch(this.currentSchedulingMethod) {
                 case "rr":
                     this.roundRobin();

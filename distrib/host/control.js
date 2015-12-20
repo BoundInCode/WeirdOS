@@ -99,7 +99,7 @@ var TSOS;
         };
         Control.hostBtnStep_click = function (btn) {
             if (_IsSingleStepMode) {
-                _CPU.isExecuting = true;
+                _HasStepped = false;
             }
         };
         Control.hostBtnHaltOS_click = function (btn) {

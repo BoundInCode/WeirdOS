@@ -37,6 +37,7 @@ var _MemoryManager: TSOS.MemoryManager;
 var _ProcessManager: TSOS.ProcessManager;
 
 var _IsSingleStepMode: boolean = false;
+var _HasStepped: boolean = false;
 
 var _OSclock: number = 0;  // Page 23.
 var _Quantum: number = 6;

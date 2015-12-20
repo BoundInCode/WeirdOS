@@ -119,7 +119,7 @@ module TSOS {
 
         public static hostBtnStep_click(btn) {
             if(_IsSingleStepMode) {
-                _CPU.isExecuting = true;
+                _HasStepped = false;
             }
         }
 

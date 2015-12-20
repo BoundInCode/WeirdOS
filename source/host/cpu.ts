@@ -348,10 +348,6 @@ module TSOS {
             (<HTMLCanvasElement>document.getElementById("x-value")).innerHTML   = this.Xreg.toString(16);
             (<HTMLCanvasElement>document.getElementById("y-value")).innerHTML   = this.Yreg.toString(16);
             (<HTMLCanvasElement>document.getElementById("z-value")).innerHTML   = this.Zflag.toString(16);
-
-            if(_IsSingleStepMode) {
-                this.isExecuting = false;
-            }
         }
     }
 }
