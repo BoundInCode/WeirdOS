@@ -215,6 +215,10 @@ module TSOS {
             this.symTD.innerHTML = "00";
             this.argTD.innerHTML = "N/A";
 
+            if (this.CurrentPCB.tsb) {
+                _krnFsDriver.deleteBlock(this.CurrentPCB.tsb);
+            }
+
             this.CurrentPCB.processState = ProcessState.TERMINATED;
             this.CurrentPCB.endTime = _OSclock;
             _ProcessManager.updatePCB(this.CurrentPCB);

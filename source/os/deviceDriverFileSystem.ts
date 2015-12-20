@@ -177,6 +177,11 @@ module TSOS {
         }
 
         public deleteBlock(tsb: TSB): void {
+            var block = _HDD.read(tsb);
+            var nextBlock = this.getTSB(block);
+            if (nextBlock.toString() !== "000") {
+                this.deleteBlock(nextBlock);
+            }
             _HDD.write(tsb, this.ZERO_BLOCK);
         }
 
@@ -192,7 +197,7 @@ module TSOS {
             this.deleteFile(filename);
             var filenameTsb = this.files[filename];
             var tsb = this.getTSB(_HDD.read(filenameTsb));
-            while (tsb.track == 0 && tsb.sector == 0 && tsb.block == 0) {
+            while (tsb.toString() == "000") {
                 tsb = this.nextAvailableBlock();
                 var str =  this.stringToHex(filename);
                 _HDD.write(filenameTsb, this.UNAVAILABLE + tsb + str);

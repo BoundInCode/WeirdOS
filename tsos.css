@@ -63,6 +63,7 @@ body {
     white-space: nowrap;
     font-size: 0.8em;
     font-family: monospace;
+    padding: 2px 8px;
 }
 
 #consolePanel {

@@ -46,7 +46,7 @@ module TSOS {
             // load
             sc = new ShellCommand(this.shellLoad,
                 "load",
-                "- Loads the user program into the OS memory.");
+                "- load <priority>. Loads the user program into the OS memory.");
             this.commandList[this.commandList.length] = sc;
 
             // clear memory

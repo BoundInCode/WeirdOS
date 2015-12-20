@@ -219,7 +219,7 @@ module TSOS {
 
             // STEP 3: Delete old process from memory
             _krnFsDriver.deleteBlock(newPcb.tsb);
-            newPcb.tsb = null;
+            // newPcb.tsb = null;
 
             // STEP 4: Start CPU
             _CPU.start(newPcb);

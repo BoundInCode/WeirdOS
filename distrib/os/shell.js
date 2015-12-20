@@ -32,7 +32,7 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "- Set the status in the Host.");
             this.commandList[this.commandList.length] = sc;
             // load
-            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Loads the user program into the OS memory.");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- load <priority>. Loads the user program into the OS memory.");
             this.commandList[this.commandList.length] = sc;
             // clear memory
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- Clear all the memory partitions.");
