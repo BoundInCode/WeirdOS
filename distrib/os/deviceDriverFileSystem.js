@@ -139,6 +139,7 @@ var TSOS;
                 _StdOut.putText("File must be less than 62 characters.");
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
+                return;
             }
             _Kernel.krnTrace("Creating file: " + filename);
             // get next available block
@@ -195,7 +196,7 @@ var TSOS;
             var filenameTsb = this.files[filename];
             var tsb = this.getTSB(_HDD.read(filenameTsb));
             if (tsb.toString() === "000") {
-                var tsb = this.nextAvailableBlock();
+                tsb = this.nextAvailableBlock();
             }
             // clear file beforehand
             this.deleteBlock(tsb);
@@ -224,8 +225,7 @@ var TSOS;
                 _OsShell.putPrompt();
                 return;
             }
-            console.log(localStorage);
-            if (!this.files[filename]) {
+            else if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
             }
@@ -233,7 +233,7 @@ var TSOS;
             var tsb = this.getTSB(_HDD.read(filenameTsb));
             var data = _HDD.read(tsb);
             var nextBlock = this.getTSB(data);
-            while (nextBlock.track != 0 || nextBlock.sector != 0 || nextBlock.block != 0) {
+            while (nextBlock.toString() !== "000") {
                 _StdOut.putText(this.hexToString(data.substring(4)));
                 data = _HDD.read(nextBlock);
                 nextBlock = this.getTSB(data);
@@ -250,7 +250,7 @@ var TSOS;
                 _OsShell.putPrompt();
                 return;
             }
-            if (!this.files[filename]) {
+            else if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
             }
@@ -258,7 +258,7 @@ var TSOS;
             var tsb = this.getTSB(_HDD.read(filenameTsb));
             var data = _HDD.read(tsb);
             var nextBlock = this.getTSB(data);
-            while (nextBlock.track != 0 || nextBlock.sector != 0 || nextBlock.block != 0) {
+            while (nextBlock.toString() != "000") {
                 var newData = this.AVAILABLE + data.substring(1);
                 _HDD.write(tsb, newData);
                 var data = _HDD.read(filenameTsb);
@@ -289,14 +289,16 @@ var TSOS;
         DeviceDriverFileSystem.prototype.ls = function () {
             if (!_HDD.formatted) {
                 _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
                 return;
             }
+            _Kernel.krnTrace("[LS] Listing all the files on the disk.");
             for (var filename in this.files) {
-                _StdOut.putText(filename + "      ");
+                _StdOut.putText(filename + "         ");
             }
             _StdOut.advanceLine();
             _OsShell.putPrompt();
-            _Kernel.krnTrace("[LS] Listing all the files on the disk.");
         };
         return DeviceDriverFileSystem;
     })(TSOS.DeviceDriver);
