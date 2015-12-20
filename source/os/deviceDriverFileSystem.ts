@@ -95,9 +95,9 @@ module TSOS {
             return block;
         }
 
-        public writeFileContents(fileContents: string): TSB {
+        public writeFileContents(fileContents: string, tsb?: TSB): TSB {
             _Kernel.krnTrace("Saving data to disk");
-            var block = this.nextAvailableBlock();
+            var block = (tsb !== null) ?tsb :this.nextAvailableBlock();
             var nextBlock = new TSB(0,0,0);
             var str = fileContents;
             var maxLength = _HDD.blockSize - this.HEADER_SIZE / 2;
@@ -131,6 +131,8 @@ module TSOS {
         public createFile(filename: string): void {
             if (!_HDD.formatted) {
                 _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
                 return;
             }
             _Kernel.krnTrace("Creating file: " + filename);
@@ -188,29 +190,25 @@ module TSOS {
         public writeFile(filename, data): void {
             if (!_HDD.formatted) {
                 _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
                 return;
-            }
-            if (!this.files[filename]) {
+            } else if (!this.files[filename]) {
                 _StdOut.putText("File '" + filename + "' does not exist.");
                 return;
             }
-            this.deleteFile(filename);
+
             var filenameTsb = this.files[filename];
             var tsb = this.getTSB(_HDD.read(filenameTsb));
-            while (tsb.toString() == "000") {
-                tsb = this.nextAvailableBlock();
-                var str =  this.stringToHex(filename);
-                _HDD.write(filenameTsb, this.UNAVAILABLE + tsb + str);
+
+            if (tsb.toString() === "000") {
+                var tsb = this.nextAvailableBlock();
             }
 
-            if (data.length > 60) {
-                var nextBlock = this.writeFileContents(data.substring(60));
-                var str = this.stringToHex(data.substring(60));
-                _HDD.write(tsb,this.UNAVAILABLE + nextBlock + str);
-            } else {
-                var str = this.UNAVAILABLE + "000" + this.stringToHex(data);
-                _HDD.write(tsb, str);
-            }
+            // clear file beforehand
+            this.deleteBlock(tsb);
+            this.writeFileContents(data, tsb);
+
             _StdOut.putText("File '" + filename + "' written.");
             _StdOut.advanceLine();
             _OsShell.putPrompt();
@@ -235,6 +233,8 @@ module TSOS {
         public readFile(filename): void {
             if (!_HDD.formatted) {
                 _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
                 return;
             }
             console.log(localStorage);
@@ -262,6 +262,8 @@ module TSOS {
         public deleteFile(filename): void {
             if (!_HDD.formatted) {
                 _StdOut.putText("Please format the HDD before duing any Disk I/O.");
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
                 return;
             }
             if (!this.files[filename]) {
