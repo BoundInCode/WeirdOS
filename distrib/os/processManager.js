@@ -39,7 +39,6 @@ var TSOS;
                 processControlBlock.onDisk = true;
                 processControlBlock.tsb = tsb;
             }
-            console.log(localStorage);
             this.currentPID++;
             return processControlBlock.pid;
         };

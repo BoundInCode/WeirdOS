@@ -58,8 +58,6 @@ module TSOS {
                 processControlBlock.tsb = tsb;
             }
 
-            console.log(localStorage);
-
             this.currentPID++;
             return processControlBlock.pid;
         }
