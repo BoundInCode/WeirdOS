@@ -192,6 +192,7 @@ var TSOS;
                 _krnFsDriver.deleteBlock(this.CurrentPCB.tsb);
             }
             this.CurrentPCB.processState = TSOS.ProcessState.TERMINATED;
+            this.CurrentPCB.tsb = null;
             this.CurrentPCB.endTime = _OSclock;
             _ProcessManager.updatePCB(this.CurrentPCB);
             this.stop();

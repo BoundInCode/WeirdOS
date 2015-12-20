@@ -220,6 +220,7 @@ module TSOS {
             }
 
             this.CurrentPCB.processState = ProcessState.TERMINATED;
+            this.CurrentPCB.tsb = null;
             this.CurrentPCB.endTime = _OSclock;
             _ProcessManager.updatePCB(this.CurrentPCB);
             this.stop();

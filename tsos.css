@@ -17,6 +17,10 @@ nav.navbar-default {
     border-bottom: 6px solid #404040 !important;
 }
 
+.nav input {
+    margin-top: 8px;
+}
+
 .navbar-brand {
     /* color: white !important; */
     color: #DC5B5B !important;

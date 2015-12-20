@@ -117,7 +117,6 @@ var TSOS;
             //
             // Display the initial prompt.
             this.putPrompt();
-            document.getElementById("dateBadge").innerHTML = new Date().toLocaleDateString();
         };
         Shell.prototype.putPrompt = function () {
             _StdOut.putText(this.promptStr);

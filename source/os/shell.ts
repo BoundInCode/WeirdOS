@@ -1,7 +1,7 @@
 ///<reference path="../globals.ts" />
 ///<reference path="../utils.ts" />
-    ///<reference path="shellCommand.ts" />
-    ///<reference path="userCommand.ts" />
+///<reference path="shellCommand.ts" />
+///<reference path="userCommand.ts" />
 
 
 /* ------------
@@ -212,7 +212,6 @@ module TSOS {
             //
             // Display the initial prompt.
             this.putPrompt();
-            document.getElementById("dateBadge").innerHTML = new Date().toLocaleDateString();
         }
 
         public putPrompt() {

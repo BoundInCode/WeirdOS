@@ -47,15 +47,70 @@
         <script type="text/javascript" src="distrib/utils.js"></script>
         <!-- Uncomment this line below to enable GLaDOS testing -->
         <script type="text/javascript" src="http://www.labouseur.com/courses/os/projects/glados.js"></script>
+
+        <script type="text/javascript">
+            $(function() {
+                document.getElementById("dateBadge").innerHTML = new Date().toLocaleDateString();
+            });
+        </script>
     </head>
 
     <body onload="onDocumentLoad()">
 
-        <div id="page-wrapper divMain" style="width:100%;">
+        <div id="page-wrapper divMain" style="width:100%; padding-top: 66px;">
 
-            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="index.html">Weird<strong>OS</strong></a>
+                </div>
+                <div class="nav navbar-nav">
+                    <input type="button"
+                    id = "btnStartOS"
+                    name="brnStartOS"
+                    class="btn btn-success"
+                    value="Start"
+                    tabindex="0"
+                    onclick="TSOS.Control.hostBtnStartOS_click(this);">
+
+                    <input type="button"
+                    id = "btnHaltOS"
+                    name="brnHaltOS"
+                    class="btn btn-default"
+                    disabled="disabled"
+                    value="Halt"
+                    tabindex="1"
+                    onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+
+                    <input type="button"
+                    id = "btnReset"
+                    name="brnReset"
+                    class="btn btn-danger"
+                    disabled="disabled"
+                    value="Reset"
+                    tabindex="2"
+                    onclick="TSOS.Control.hostBtnReset_click(this);">
+
+                    <div class="btn-group" data-toggle="buttons">
+                        <input type="button"
+                        id = "btnSingleStep"
+                        name="brnSingleStep"
+                        class="btn btn-primary"
+                        value="Single Step Mode"
+                        tabindex="2"
+                        onclick="TSOS.Control.hostBtnToggleSingleStep_click(this);">
+
+                        <input type="button"
+                        class="btn btn-primary"
+                        disabled="disabled"
+                        id="btnStep"
+                        value="Step"
+                        tabindex="2"
+                        onclick="TSOS.Control.hostBtnStep_click(this);">
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <p class="navbar-text" id="status">Active</p>
+                        <p class="navbar-text" id="dateBadge">Today</p>
+                </ul>
                 </div>
             </nav>
 
@@ -80,53 +135,6 @@
             <div class="row">
                 <div class="col-sm-1"></div>
                 <div class="col-sm-8">
-                    <div id="divButtonBar" style="margin:4px;">
-                        <input type="button"
-                        id = "btnStartOS"
-                        name="brnStartOS"
-                        class="btn btn-success"
-                        value="Start"
-                        tabindex="0"
-                        onclick="TSOS.Control.hostBtnStartOS_click(this);">
-
-                        <input type="button"
-                        id = "btnHaltOS"
-                        name="brnHaltOS"
-                        class="btn btn-default"
-                        disabled="disabled"
-                        value="Halt"
-                        tabindex="1"
-                        onclick="TSOS.Control.hostBtnHaltOS_click(this);">
-
-                        <input type="button"
-                        id = "btnReset"
-                        name="brnReset"
-                        class="btn btn-danger"
-                        disabled="disabled"
-                        value="Reset"
-                        tabindex="2"
-                        onclick="TSOS.Control.hostBtnReset_click(this);">
-
-                        <div class="btn-group" data-toggle="buttons">
-                            <input type="button"
-                            id = "btnSingleStep"
-                            name="brnSingleStep"
-                            class="btn btn-primary"
-                            value="Single Step Mode"
-                            tabindex="2"
-                            onclick="TSOS.Control.hostBtnToggleSingleStep_click(this);">
-
-                            <input type="button"
-                            class="btn btn-primary"
-                            disabled="disabled"
-                            id="btnStep"
-                            value="Step"
-                            tabindex="2"
-                            onclick="TSOS.Control.hostBtnStep_click(this);">
-                        </div>
-                        <span class="label label-default" id="status">Active</span>
-                        <span class="label label-default" id="dateBadge">today</span>
-                    </div>
                 </div>
             </div>
             <div class="row">
